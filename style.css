@@ -16,7 +16,7 @@
 }
 
 .bar:hover {
-    filter: brightness(0.8);
+    filter: brightness(0.7);
 }
 
 .dots {
@@ -49,6 +49,20 @@
     width: 10px;
     background-color: rgba(0, 0, 0, 0);
     border-radius: 50%;
+}
+
+.dotV:hover {
+    background-color: aqua;
+}
+
+.dotS:hover {
+    background-color: aqua;
+}
+
+.btn {
+    height: 100px;
+    width: 200px;
+    font-size: 40px;
 }
 
 /* .bar0 {

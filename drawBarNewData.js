@@ -125,6 +125,7 @@ for (let i = 0; i < list.length; i++) {
     //Adjust to the new object format here :
     var dotContainer = document.createElement('div');
     dotContainer.className = 'dots';
+    //dotContainer.Id = 'dots';
     //create fictional non visible dot for adjusting appearence if 
     // Count + Scrap == 0;
     if (list[i].ArrayProductData.length === 0) {
@@ -167,6 +168,22 @@ for (let i = 0; i < list.length; i++) {
     drawBar(list);
     //console.log(elt);    
 }
+
+function disappear() {
+    var d = document.getElementsByClassName('dots');
+    for (let i = 0; i < d.length; i++) {
+        d[i].style.visibility = "hidden";
+    }
+}
+
+function show() {
+    var d = document.getElementsByClassName('dots');
+    for (let i = 0; i < d.length; i++) {
+        d[i].style.visibility = "visible";
+    }
+}
+
+
 
 // *******WORKS********
 
