@@ -22,11 +22,8 @@ class ProductData {
 }
 var list = [];
 
-// function randomDate(start, end) {
-//     return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
-// }
-// randomDate(new Date(2012, 0, 1), new Date())
-let max = 300;
+
+let max = 500;
 let min = 100;
 var arr = ['Micro Stop', 'Out Of Service', 'Unknown']
 var x = Math.random() < 0.5;
@@ -54,7 +51,7 @@ var first_block = new OeeDataBase(x, y, z, t, apd);
 list.push(first_block);
 
 
-for (var i = 1; i < 100; i++) {
+for (var i = 1; i < 20; i++) {
     let x = Math.random() < 0.5;
     let y = list[i-1].FinishedAt;
     let z = y + Math.floor(Math.random() * (max - min) + min);
@@ -142,11 +139,15 @@ for (let i = 0; i < list.length; i++) {
                 for (let j = 0; j < list[i].ArrayProductData[prod].Count; j ++) {
                     var newProd = document.createElement('div');
                     newProd.className = 'dotV';
+                    //newProd.onmouseover = "showMessage()";
+                    //newProd.onmouseout = "hideMessage()";
                     dotContainer.appendChild(newProd);
                 }
                 for (let j = 0; j < list[i].ArrayProductData[prod].Scrap; j ++) {
                     var newProd = document.createElement('div');
                     newProd.className = 'dotS';
+                    //newProd.onmouseover = "showMessage()";
+                    //newProd.onmouseout = "hideMessage()";
                     dotContainer.appendChild(newProd);
                 }
             }
@@ -169,7 +170,7 @@ for (let i = 0; i < list.length; i++) {
     //console.log(elt);    
 }
 
-function disappear() {
+function hide() {
     var d = document.getElementsByClassName('dots');
     for (let i = 0; i < d.length; i++) {
         d[i].style.visibility = "hidden";
@@ -183,9 +184,54 @@ function show() {
     }
 }
 
+//console.log(window.innerWidth);
 
 
-// *******WORKS********
+/*********************************WORKS****************************************/
+
+//Calculates remaining space to the end of the screen
+//for each block as if the block was the first one.
+function remainingSpace(current_block) {
+    let row_width = window.innerWidth;
+    let current_block_width = current_block.FinishedAt - current_block.StartedAt;
+    //let previous_block_width = previous_block.FinishedAt - previous_block.StartedAt;
+    let remaining_space = row_width - current_block_width/* + previous_block_width*/;
+    let i = 0;
+    while (remaining_space < 0) {
+        remaining_space += row_width;
+        i++
+    }
+    
+    return remaining_space;
+}
+
+//calculates the number of blocks the could fit in a row
+//starting from a given block.
+function nbr_blocks_row(list_of_blocks, starting_block) {
+    let sum = 0;
+    for (let i = starting_block; i < list_of_blocks.length; i++) {
+        sum += list_of_blocks[i].FinishedAt - list_of_blocks[i].StartedAt;        
+        if (sum > window.innerWidth - 10) {
+            return i - starting_block;
+        }
+    }
+}
+
+var x = 0;
+while (x < list.length) {
+    nbr = nbr_blocks_row(list, x);
+    console.log(nbr);
+    x += nbr;
+}
+
+// for (let i = 0; i < 5; i++) {
+//     console.log(remainingSpace(list[i]));
+// }
+
+// function rectangleDivider(rectangle) {
+
+// }
+
 
 
 

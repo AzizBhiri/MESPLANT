@@ -103,7 +103,7 @@ for (let i = 0; i < list.length; i++) {
     var newDiv = document.createElement('div');
     newDiv.className = 'bar';
     newDiv.setAttribute("id", "bar" + i.toString());
-    //console.log(newDiv.className);
+    console.log(newDiv.className);
     //Adjust to the new object format here : 
     //dots
     var dotContainer = document.createElement('div');
