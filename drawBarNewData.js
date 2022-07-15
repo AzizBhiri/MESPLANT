@@ -118,6 +118,7 @@ for (let i = 0; i < list.length; i++) {
     var newDiv = document.createElement('div');
     newDiv.className = 'bar';
     newDiv.setAttribute("id", "bar" + i.toString());
+    //newDiv.innerHTML = ".".repeat(list[i].FinishedAt - list[i].StartedAt);
     //console.log(newDiv.className);
     //Adjust to the new object format here :
     var dotContainer = document.createElement('div');
@@ -189,16 +190,17 @@ function show() {
 
 /*********************************WORKS****************************************/
 
+/*
 //Calculates remaining space to the end of the screen
-//for each block as if the block was the first one.
-function remainingSpace(current_block) {
-    let row_width = window.innerWidth;
-    let current_block_width = current_block.FinishedAt - current_block.StartedAt;
+//for each row
+function remainingSpace(list_of_blocks, row) {
+    let screen_width = window.innerWidth;
+    let filled_width = last_block.FinishedAt - first_block.StartedAt;
     //let previous_block_width = previous_block.FinishedAt - previous_block.StartedAt;
-    let remaining_space = row_width - current_block_width/* + previous_block_width*/;
+    let remaining_space = screen_width - filled_width;
     let i = 0;
     while (remaining_space < 0) {
-        remaining_space += row_width;
+        remaining_space += screen_width;
         i++
     }
     
@@ -218,43 +220,11 @@ function nbr_blocks_row(list_of_blocks, starting_block) {
 }
 
 var x = 0;
+var nbr_of_blocks = [];
 while (x < list.length) {
     nbr = nbr_blocks_row(list, x);
-    console.log(nbr);
+    nbr_of_blocks.push(nbr);
     x += nbr;
 }
-
-// for (let i = 0; i < 5; i++) {
-//     console.log(remainingSpace(list[i]));
-// }
-
-// function rectangleDivider(rectangle) {
-
-// }
-
-
-
-
-
-
-// for (let i = 0; i < list.length; i++) {
-//     drawBar(list[i]);
-    
-// }
-
-// //Select all elements with class .bar
-// var temp = document.querySelectorAll(".bar");
-// //Apply CSS property to it
-// for (var i = 0; i < temp.length; i++) {
-//     temp[i].style.background-color =  var(--col);
-//     temp[i].style.width = var(--wid);
-// }
-
-// for (let i = 0; i < list.length; i++) {
-//     drawBar(list[i]);
-    
-// }
-
-// for (var i =0; i <= list.length; i++) {
-//     drawBar(list[i]);
-// }
+console.log(nbr_of_blocks);
+*/
