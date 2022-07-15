@@ -20,13 +20,30 @@
         </select>
         <br><br>
         <br><br>    
-        <label for="Workstation"><b>Choose a Workstation : </b></label>
+        <!-- <label for="Workstation"><b>Choose a Workstation : </b></label>
         <select name="Workstation" id="Workstation">
           <option value="All">All</option>
           <option value="Machine 1">Machine 1</option>
           <option value="Machine 2">Machine 2</option>
           <option value="Machine 3">Machine 3</option>
-        </select>
+        </select> -->
+        <div class="multiselect">
+            <div class="selectBox" onclick="showCheckboxes()">
+                <label for="Workstation"><b>Choose a Workstation : </b></label>
+                <select>
+                    <option>Select an option</option>
+                </select>
+                <div class="overSelect"></div>
+            </div>
+            <div id="checkboxes">
+              <label for="one">
+                <input type="checkbox" id="one" />All</label>
+              <label for="two">
+                <input type="checkbox" id="two" />Machine 1</label>
+              <label for="three">
+                <input type="checkbox" id="three" />Machine 2</label>
+            </div>
+        </div>
         <br><br>
         <br><br>    
         <label for="Report"><b>Choose a Report Type : </b></label>
@@ -37,8 +54,26 @@
           <option value="IoT">IoT</option>
           <option value="Service">Service</option>
         </select>       
-        <br><br>     
+        <br><br>
+        <br><br>    
+        <input type="button" name="report" id="report" value="Create Report">       
+        <br><br>
+        <input type="button" name="logout" id="logout" value="Log Out">
+        <input type="button" name="back" id="back" value="Back">            
     </form>     
-</div>    
+</div>
+<script>
+    var expanded = false;
+    function showCheckboxes() {
+        var checkboxes = document.getElementById("checkboxes");
+        if (!expanded) {
+            checkboxes.style.display = "block";
+            expanded = true;
+        } else {
+            checkboxes.style.display = "none";
+            expanded = false;
+        }
+    }
+</script>  
 </body> 
 </html>

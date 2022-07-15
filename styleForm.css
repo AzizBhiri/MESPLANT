@@ -50,9 +50,9 @@ label{
     border-radius: 17px;  
     padding-left: 7px;  
     color: #08ffd1;
-    font-size: 20px;  
-  
-  
+    font-size: 20px; 
+    font-weight: bolder;  
+
 }
 
 #log:hover {
