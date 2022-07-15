@@ -233,3 +233,15 @@ for (let i = 0; i < nbr_of_blocks.length - 1; i++) {
 }
 
 /*********************************WORKS****************************************/
+
+// Function to check if a block fits in the remaining space
+function checkSpace(block, space) {
+    return block.getBlockLength() <= space;
+}
+
+// Function to divide a block
+function splitBlock(block, splitPoint) {
+    block.FinishedAt = splitPoint;
+    var new_block = new OeeDataBase(block.IsRunning, splitPoint, block.FinishedAt, block.DowntimeTypeName, block.ArrayProductData);
+    return new_block;
+}
