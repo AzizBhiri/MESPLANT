@@ -60,6 +60,25 @@ label{
     color: white;
 }
 
+#home{  
+    width: 60px;  
+    height: 30px;  
+    border: none;  
+    border-radius: 17px;  
+    padding-left: 7px;  
+    color: #23463f;
+    font-size: 10px;
+    font-weight: bolder;
+    position: absolute;
+    top: 50px;
+    right: 50px;
+}
+
+#home:hover {
+    background-color: #23463f;
+    color: white;
+}
+
 span{  
     color: white;  
     font-size: 17px;  
