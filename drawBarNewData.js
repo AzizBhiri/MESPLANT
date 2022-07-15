@@ -9,6 +9,9 @@ class OeeDataBase {
         this.ArrayProductData = ArrayProductData;
     }
 
+    getBlockLength() {
+        return this.FinishedAt - this.StartedAt;
+    }
 
 }
 
@@ -188,25 +191,6 @@ function show() {
 //console.log(window.innerWidth);
 
 
-/*********************************WORKS****************************************/
-
-/*
-//Calculates remaining space to the end of the screen
-//for each row
-function remainingSpace(list_of_blocks, row) {
-    let screen_width = window.innerWidth;
-    let filled_width = last_block.FinishedAt - first_block.StartedAt;
-    //let previous_block_width = previous_block.FinishedAt - previous_block.StartedAt;
-    let remaining_space = screen_width - filled_width;
-    let i = 0;
-    while (remaining_space < 0) {
-        remaining_space += screen_width;
-        i++
-    }
-    
-    return remaining_space;
-}
-
 //calculates the number of blocks the could fit in a row
 //starting from a given block.
 function nbr_blocks_row(list_of_blocks, starting_block) {
@@ -227,4 +211,25 @@ while (x < list.length) {
     x += nbr;
 }
 console.log(nbr_of_blocks);
-*/
+
+//Calculates remaining space to the end of the screen
+//for each row
+function remainingSpace(list_of_blocks, row) {
+    let x = nbr_of_blocks[row];
+    let prev_blocks = 0;
+    for (let i = 0; i < row; i++) {
+        prev_blocks += nbr_of_blocks[i];
+    }
+    let block_lengths = 0;
+    for (let i = prev_blocks; i < prev_blocks + x; i++) {
+        block_lengths += list_of_blocks[i].getBlockLength();
+    }
+    var remaining_space = window.innerWidth - block_lengths;
+    return remaining_space;
+}
+
+for (let i = 0; i < nbr_of_blocks.length - 1; i++) {
+    console.log(remainingSpace(list, i));
+}
+
+/*********************************WORKS****************************************/
