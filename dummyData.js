@@ -1,23 +1,27 @@
 class OeeDataBase {
-    constructor(IsRunning, StartedAt, FinishedAt, DowntimeTypeName, ArrayProductData) {
+    constructor(IsRunning, StartedAt, FinishedAt, DowntimeTypeName, Product_ID, Product_name, Valid, Scrap) {
         this.IsRunning = IsRunning;
         this.StartedAt = StartedAt;
         this.FinishedAt = FinishedAt;
         this.DowntimeTypeName = DowntimeTypeName;
-        this.ArrayProductData = ArrayProductData;
-    }
-
-
-}
-
-class ProductData {
-    constructor(Id, Name, Count, Scrap) {
-        this.Id = Id;
-        this.Name = Name;
-        this.Count = Count;
+        // this.ArrayProductData = ArrayProductData;
+        this.Product_ID = Product_ID;
+        this.Product_name = Product_name;
+        this.Valid = Valid;
         this.Scrap = Scrap;
     }
+
+
 }
+
+// class ProductData {
+//     constructor(Id, Name, Count, Scrap) {
+//         this.Id = Id;
+//         this.Name = Name;
+//         this.Count = Count;
+//         this.Scrap = Scrap;
+//     }
+// }
 
 var list = [];
 
@@ -43,8 +47,8 @@ function makeRand() {
    return result;
 }
 
-var pd = new ProductData(Math.floor(Math.random() * Math.random() * 100), makeRand(), Math.floor(Math.random()), Math.floor(Math.random()));
-var first_block = new OeeDataBase(x, y, z, t, pd);
+// var pd = new ProductData(Math.floor(Math.random() * Math.random() * 100), makeRand(), Math.floor(Math.random()), Math.floor(Math.random()));
+var first_block = new OeeDataBase(x, y, z, t, Math.floor(Math.random() * Math.random() * 100), makeRand(), Math.floor(Math.random() * 10), Math.floor(Math.random() * 10));
 list.push(first_block);
 
 
@@ -54,12 +58,11 @@ for (var i = 1; i < 10; i++) {
     let z = y + Math.floor(Math.random() * 100);
     let t = arr[Math.floor(Math.random() * arr.length)];
     let apd = [];
-    for (j = 0; j < Math.floor(Math.random() * 10); j++) {
-        let pd = new ProductData(Math.floor(Math.random() * Math.random() * 100), makeRand(),Math.floor(Math.random()*10), Math.floor(Math.random()*10));
-        apd.push(pd);
-    }
-    list.push(new OeeDataBase(x, y, z, t, apd));    
+    // for (j = 0; j < Math.floor(Math.random() * 10); j++) {
+    //     let pd = new ProductData(Math.floor(Math.random() * Math.random() * 100), makeRand(),Math.floor(Math.random()*10), Math.floor(Math.random()*10));
+    //     apd.push(pd);
+    // }
+    list.push(new OeeDataBase(x, y, z, t, Math.floor(Math.random() * Math.random() * 100), makeRand(), Math.floor(Math.random() * 10), Math.floor(Math.random() * 10)));    
 }
 
 console.log(list);
-//console.log(list[1].ArrayProductData);
