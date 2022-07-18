@@ -8,13 +8,34 @@
     display: inline-block;
 }
 
-/* body {
-    width: 90vw;
-    border: 5px solid black;
-    padding: 20px;
-    margin: 50px;
-} */
+body {
+    background-color:#6abadeba;
 
+}
+
+.timeAxis {
+    width: 60vw;
+    height: 2px;
+    background-color: black;
+    position: absolute;
+    top: 22%;
+    /* bottom: 25vh; */
+    left: calc(20vw + 28px);
+}
+
+.barsContainer {
+    width: 60vw;
+    border-width: 8px;
+    border-color: black;
+    border-style: solid;
+    border-radius: 6px;
+    padding: 20px;
+    position: absolute;
+    top: 25%;
+    /* bottom: 25vh; */
+    left: 20vw;
+    /* right: 25vw; */
+}
 .bar {
     /* border-style: solid;
     border-width: 1px;
@@ -36,7 +57,7 @@
     justify-content: space-around;
     align-items: flex-end;
     height: var(--hei);
-    visibility: hidden;
+    visibility: visible;
 }
 
 .dotV{
@@ -72,9 +93,9 @@
 }
 
 .btn {
-    height: 80px;
-    width: 200px;
-    font-size: 40px;
+    height: 40px;
+    width: 100px;
+    font-size: 20px;
     font-weight: bold;
 }
 

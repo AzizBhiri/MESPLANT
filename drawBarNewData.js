@@ -1,5 +1,3 @@
-//import {OeeDataBase, ProductData, list} from './dummyData.js';
-
 class OeeDataBase {
     constructor(IsRunning, StartedAt, FinishedAt, DowntimeTypeName, Product_ID, Product_name, Valid, Scrap) {
         this.IsRunning = IsRunning;
@@ -48,6 +46,14 @@ function makeRand() {
    }
    return result;
 }
+
+//utc to local time in millisecinds since 1970
+function utcToLocal(time) {
+    var offset_in_ms = new Date().getTimezoneOffset() * 1000; 
+    return time + offset_in_ms;
+}
+
+//console.log(utcToLocal(1658143978361));
 
 // var apd = [];
 // for (j = 0; j < Math.floor(Math.random() * 6); j++) {
@@ -110,13 +116,15 @@ function drawBar(bars) {
             }
         }
     
-        var width = bars[i].FinishedAt - bars[i].StartedAt;
-        let w = width.toString() + 'px';
+        var width = 0.04 * (utcToLocal(bars[i].FinishedAt) - utcToLocal(bars[i].StartedAt)); //divide by 1000 when using real time and not simulation data
+        let w = width.toString() + 'vw'; 
         width_set(i, w);
     }
 
 }
 
+// var s = moment.utc(1486116995814).local();
+// console.log(s);
 // //divide blocks in the list of blocks
 // for (i = 0; i < list.length; i++) {
 
@@ -298,3 +306,5 @@ function show() {
 //     var new_block = new OeeDataBase(block.IsRunning, splitPoint, block.FinishedAt, block.DowntimeTypeName, block.ArrayProductData.slice(splitPointArray));
 //     return new_block;
 // }
+
+//console.log(list);
