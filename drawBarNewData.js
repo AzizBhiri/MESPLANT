@@ -123,6 +123,37 @@ function drawBar(bars) {
 
 }
 
+// //return indices of blocks based on start and end times
+// function startEnd(list_of_blocks, startTime, EndTime) {
+//     start = 0;
+//     end = list_of_blocks.length - 1;
+//     for (let i = 0; i < list_of_blocks.length; i++) {
+//         if list_of_blocks[i].StartedAt > 
+//     }
+// }
+
+//Blocks width is dependent on time : 2H (7 200 000 ms) === 60vw - 40px
+function drawBarDay(list_of_blocks) {
+    for (let i = 0; i < list_of_blocks.length; i++) {
+        if (list_of_blocks[i].IsRunning) {
+        color_set(i, 'green');
+        } else {
+            if (list_of_blocks[i].DowntimeTypeName === "Unknown") {
+                color_set(i, 'red');
+            } else if (list_of_blocks[i].DowntimeTypeName === "Out Of Service") {
+                color_set(i, 'DimGray');
+            } else {
+                color_set(i, 'Yellow');
+            }
+        }
+    
+        var width = (utcToLocal(list_of_blocks[i].FinishedAt) - utcToLocal(list_of_blocks[i].StartedAt)) / 720;
+        let w = "calc(" + width.toString() + "*(60vw - 40px))"; 
+        width_set(i, w);
+    }
+
+}
+
 // var s = moment.utc(1486116995814).local();
 // console.log(s);
 // //divide blocks in the list of blocks
@@ -228,7 +259,7 @@ for (let i = 0; i < list.length; i++) {
     elt.style.height = "50px";    
     elt.style.width = "var(--wid" + i.toString() + ")";    
     elt.style.backgroundColor = "var(--col" + i.toString() + ")";
-    drawBar(list);
+    drawBarDay(list);
     //console.log(elt);    
 }
 
