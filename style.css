@@ -13,6 +13,61 @@ body {
 
 }
 
+.timeAxis {
+    height: 4px;
+    background-color: black;
+    width: calc(60vw - 12px);
+    position: absolute;
+    top: calc(25% - 20px);
+    left: calc(20vw + 28px);
+}
+
+.leftSide {
+    height: 10px;
+    background-color: black;
+    width: 4px;
+    position: absolute;
+    top: calc(25% - 22px);
+    left: calc(20vw + 28px);
+} 
+
+.oneH {
+    position: absolute;
+    top: calc(25% - 45px);
+    left: calc(20vw + 24px);
+}
+
+.middleSide {
+    height: 10px;
+    background-color: black;
+    width: 4px;
+    position: absolute;
+    top: calc(25% - 22px);
+    left: calc(50vw + 22px);
+}
+
+.twoH {
+    position: absolute;
+    top: calc(25% - 45px);
+    left: calc(50vw + 14px);
+}
+
+
+.rightSide {
+    height: 10px;
+    background-color: black;
+    width: 4px;
+    position: absolute;
+    top: calc(25% - 22px);
+    left: calc(80vw + 16px);
+}
+
+.threeH {
+    position: absolute;
+    top: calc(25% - 45px);
+    left: calc(80vw + 8px);
+}
+
 .barsContainer {
     width: 60vw;
     height: 50vh;

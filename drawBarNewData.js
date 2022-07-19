@@ -250,14 +250,9 @@ function dayStartMilli(ms) {
     return (ms - (ms % 86400 * 1000));
 }
 
-function previous() {
-    
-}
-
 //scroll down on load
 function scrollDown() {
     document.getElementById("barsContainer").scrollTop = document.getElementById("barsContainer").scrollHeight;
-    console.log("success");
 }
 scrollDown();
 //console.log(window.innerWidth);
