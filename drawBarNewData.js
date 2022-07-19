@@ -111,8 +111,10 @@ function drawBar(bars) {
                 color_set(i, 'red');
             } else if (bars[i].DowntimeTypeName === "Out Of Service") {
                 color_set(i, 'DimGray');
-            } else {
+            } else if (bars[i].DowntimeTypeName === "Micro Stop") {
                 color_set(i, 'Yellow');
+            } else {
+                color_set(i, 'White');
             }
         }
     
@@ -142,16 +144,34 @@ function drawBarDay(list_of_blocks) {
                 color_set(i, 'red');
             } else if (list_of_blocks[i].DowntimeTypeName === "Out Of Service") {
                 color_set(i, 'DimGray');
-            } else {
+            } else if (list_of_blocks[i].DowntimeTypeName === "Micro Stop") {
                 color_set(i, 'Yellow');
+            } else {
+                color_set(i, 'White');
             }
         }
     
-        var width = (utcToLocal(list_of_blocks[i].FinishedAt) - utcToLocal(list_of_blocks[i].StartedAt)) / 720;
+        var width = (utcToLocal(list_of_blocks[i].FinishedAt) - utcToLocal(list_of_blocks[i].StartedAt)) / 7200000;
         let w = "calc(" + width.toString() + "*(60vw - 40px))"; 
         width_set(i, w);
     }
 
+}
+
+//Adds empty block at biginning of list if call doesn't start from beginning of day
+function blockCorrector(list_of_blocks) {
+    if ((list_of_blocks[0].StartedAt - dayStartMilli(list_of_blocks[0].StartedAt)) > 0) {
+        var emptyBlock = new OeeDataBase(null, dayStartMilli(list_of_blocks[0].StartedAt), list_of_blocks[0].StartedAt, "No Data", null, null, null, null);
+        list_of_blocks.unshift(emptyBlock);
+        return list_of_blocks;
+    }
+}
+
+//Request list of blocks
+function requestBlocks(startTime, endTime) {
+    //recieve list_of_blocks
+    //blockCorrector(list_of_blocks);
+    //drawBarDay(list_of_blocks);
 }
 
 // var s = moment.utc(1486116995814).local();
@@ -259,7 +279,7 @@ for (let i = 0; i < list.length; i++) {
     elt.style.height = "50px";    
     elt.style.width = "var(--wid" + i.toString() + ")";    
     elt.style.backgroundColor = "var(--col" + i.toString() + ")";
-    drawBarDay(list);
+    drawBar(list);
     //console.log(elt);    
 }
 
