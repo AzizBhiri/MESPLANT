@@ -64,7 +64,7 @@ var first_block = new OeeDataBase(x, y, z, t, Math.floor(Math.random() * Math.ra
 list.push(first_block);
 
 
-for (var i = 1; i < 20; i++) {
+for (var i = 1; i < 50; i++) {
     let x = Math.random() < 0.5;
     let y = list[i-1].FinishedAt;
     let z = y + Math.floor(Math.random() * (max - min) + min);
@@ -244,6 +244,14 @@ function show() {
     for (let i = 0; i < d.length; i++) {
         d[i].style.visibility = "visible";
     }
+}
+
+function dayStartMilli(ms) {
+    return (ms - (ms % 86400 * 1000));
+}
+
+function previous() {
+    
 }
 
 //console.log(window.innerWidth);
