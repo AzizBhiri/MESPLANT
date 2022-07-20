@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="styleTest.css">
+    <link rel="stylesheet" href="styleReports.css">
 </head>
 <body>    
     <img src="elplant_300.png">
@@ -55,8 +55,10 @@
           <option value="Service">Service</option>
         </select>       
         <br><br>
-        <br><br>    
-        <input type="button" name="report" id="report" value="Create Report">       
+        <br><br>
+        <a href="./doughnut.html">
+          <input type="button" name="report" id="report" value="Create Report" onclick="getOptions()">
+        </a>    
         <br><br>
         <a href="./homePage.html">
             <input type="button" name="logout" id="logout" value="Log Out">
@@ -67,6 +69,9 @@
         <input type="button" class="side" name="reports" id="reports" value="Reports">
         <input type="button" class="side"  name="services" id="services" value="Services">
     </form>     
+</div>
+<div class="chartContainer">
+  <canvas id="myChart" width="400" height="400"></canvas>
 </div>
 <script>
     var expanded = false;
@@ -80,6 +85,7 @@
             expanded = false;
         }
     }
-</script>  
+</script>
+<script src="reports.js"></script>
 </body> 
 </html>
