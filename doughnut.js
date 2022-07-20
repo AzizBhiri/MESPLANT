@@ -74,12 +74,12 @@ var grey = 0;
 for (let i = 0; i < list.length; i++) {
     if (list[i].IsRunning) {
         green += list[i].getBlockLength();
-    } else if (list[i].DowntimeTypeName === "Unknown") {
-        red += list[i].getBlockLength();
+    } else if (list[i].DowntimeTypeName === "Micro Stop") {
+        yellow += list[i].getBlockLength();
     } else if  (list[i].DowntimeTypeName === "Out Of Service") {
         grey += list[i].getBlockLength();
     } else {
-        yellow += list[i].getBlockLength();
+        red += list[i].getBlockLength();
     }
 }
 
@@ -275,31 +275,76 @@ for (let i = 0; i < unique_product_names.length; i++) {
     product_count.push(0);
 }
 
+var product_count_valid = [];
+for (let i = 0; i < unique_product_names.length; i++) {
+    product_count_valid.push(0);
+}
+
+var product_count_scrap = [];
+for (let i = 0; i < unique_product_names.length; i++) {
+    product_count_scrap.push(0);
+}
+
 for(let i = 0; i < list.length; i++) {
     product_count[unique_product_names.indexOf(list[i].Product_name)] += list[i].Valid + list[i].Scrap;
 }
 
-var colors = []; 
+for(let i = 0; i < list.length; i++) {
+    product_count_valid[unique_product_names.indexOf(list[i].Product_name)] += list[i].Valid;
+}
+
+for(let i = 0; i < list.length; i++) {
+    product_count_scrap[unique_product_names.indexOf(list[i].Product_name)] += list[i].Scrap;
+}
+
+var colors1 = []; 
 for (let i = 0; i < unique_product_names.length; i++) {
     var random_color = "#" + Math.floor(Math.random()*16777215).toString(16).padStart(6, '0').toUpperCase();
-    colors.push(random_color);
+    colors1.push(random_color);
 }
+
+var colors2 = []; 
+for (let i = 0; i < unique_product_names.length; i++) {
+    var random_color = "#" + Math.floor(Math.random()*16777215).toString(16).padStart(6, '0').toUpperCase();
+    colors2.push(random_color);
+}
+
 
 const data_bar = {
     labels: unique_product_names,
       datasets: [{
-        label: 'Products',
-        data: product_count,
-        backgroundColor: colors,
-        //minBarLength: 10,
+        label: 'Valid',
+        data: product_count_valid,
+        backgroundColor: colors1,
+        borderSkipped: 20,
         hoverBorderWidth: 2,
         hoverBorderColor: 'black'
-      }]
+      },
+      {
+        label: 'Scrap',
+        data: product_count_scrap,
+        backgroundColor: colors2,
+        borderSkipped: 20,
+        hoverBorderWidth: 2,
+        hoverBorderColor: 'black'
+      }
+    ]
 };
 
 const config_bar = {
     type: 'bar',
-    data: data_bar
+    data: data_bar,
+    options: {
+        scales: {
+            xAxes: [{
+                stacked: true
+            }],
+            yAxes: [{
+                stacked: true
+            }]
+        }
+    }
+
 }
 
 const ctx_bar = document.getElementById('myBar_product');
