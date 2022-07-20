@@ -1,0 +1,11 @@
+/* .chartContainer {
+    display: flex;
+} */
+
+#myChart_state {
+    transform: scale(0.8);
+}
+
+#myChart_product {
+    transform: scale(0.8);
+}

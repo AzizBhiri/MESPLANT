@@ -83,27 +83,15 @@ for (let i = 0; i < list.length; i++) {
     }
 }
 
-var oee = (Math.random() * 100).toFixed(1).toString() + "%";
+//product Calculator
+var valid = 0;
+var scrap = 0;
+for (let i = 0; i < list.length; i++) {
+    valid += list[i].Valid;
+    scrap += list[i].Scrap;
+}
 
-const data = {
-    labels: [
-      'Running',
-      'Unknown',
-      'Out Of Service',
-      'Micro Stop'
-    ],
-    datasets: [{
-      label: 'Test',
-      data: [green, red, grey, yellow],
-      backgroundColor: [
-        'green',
-        'red',
-        'grey',
-        'yellow'
-      ],
-      hoverOffset: 4
-    }]
-};
+var oee = (Math.random() * 100).toFixed(1).toString() + "%";
 
 const plugin = {
     beforeDraw: function(chart) {
@@ -189,25 +177,87 @@ const plugin = {
     }
 };
 
-const config = {
+Chart.pluginService.register(plugin);
+
+// 1st Doughnut
+const data_state = {
+    labels: [
+      'Running',
+      'Unknown',
+      'Out Of Service',
+      'Micro Stop'
+    ],
+    datasets: [{
+      label: 'State',
+      data: [green, red, grey, yellow],
+      backgroundColor: [
+        'green',
+        'red',
+        'grey',
+        'yellow'
+      ],
+      hoverBorderWidth: 2,
+      hoverBorderColor: 'black'
+    }]
+};
+
+const config_state = {
     type: 'doughnut',
-    data: data,
+    data: data_state,
     options: {
         elements: {
             center: {
                 text: oee,
                 color: '#000', // Default is #000000
-                fontStyle: 'Georgia ', // Default is Arial
+                fontStyle: 'Georgia', // Default is Arial
                 sidePadding: 20, // Default is 20 (as a percentage)
-                minFontSize: 20, // Default is 20 (in px), set to false and text will not wrap.
-                lineHeight: 25 // Default is 25 (in px), used for when text wraps
+                minFontSize: 15, // Default is 20 (in px), set to false and text will not wrap.
+                lineHeight: 15 // Default is 25 (in px), used for when text wraps
             }
         }
     }
 
 };
 
+const ctx_state = document.getElementById('myChart_state');
+var doughnutChart_state = new Chart(ctx_state, config_state);
 
-const ctx = document.getElementById('myChart');
-Chart.pluginService.register(plugin);
-var doughnutChart = new Chart(ctx, config);
+
+// 2nd doughnut
+const data_product = {
+    labels: [
+      'Valid',
+      'Scrap',
+    ],
+    datasets: [{
+      label: 'Products',
+      data: [valid, scrap],
+      backgroundColor: [
+        '#add8e6',
+        'orange',
+      ],
+      hoverBorderWidth: 2,
+      hoverBorderColor: 'black'
+    }]
+};
+
+const config_product = {
+    type: 'doughnut',
+    data: data_product,
+    options: {
+        elements: {
+            center: {
+                text: valid + scrap,
+                color: '#000', // Default is #000000
+                fontStyle: 'Georgia', // Default is Arial
+                sidePadding: 20, // Default is 20 (as a percentage)
+                minFontSize: 15, // Default is 20 (in px), set to false and text will not wrap.
+                lineHeight: 15 // Default is 25 (in px), used for when text wraps
+            }
+        }
+        
+    }
+};
+
+const ctx_product = document.getElementById('myChart_product');
+var doughnutChart_product = new Chart(ctx_product, config_product);
