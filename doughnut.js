@@ -83,6 +83,8 @@ for (let i = 0; i < list.length; i++) {
     }
 }
 
+var oee = (Math.random() * 100).toFixed(1).toString() + "%";
+
 const data = {
     labels: [
       'Running',
@@ -91,7 +93,7 @@ const data = {
       'Micro Stop'
     ],
     datasets: [{
-      label: 'My First Dataset',
+      label: 'Test',
       data: [green, red, grey, yellow],
       backgroundColor: [
         'green',
@@ -193,19 +195,19 @@ const config = {
     options: {
         elements: {
             center: {
-                text: 'OEE',
-                color: '#FF6384', // Default is #000000
-                fontStyle: 'Arial', // Default is Arial
+                text: oee,
+                color: '#000', // Default is #000000
+                fontStyle: 'Georgia ', // Default is Arial
                 sidePadding: 20, // Default is 20 (as a percentage)
                 minFontSize: 20, // Default is 20 (in px), set to false and text will not wrap.
                 lineHeight: 25 // Default is 25 (in px), used for when text wraps
             }
-        },
-        plugins: plugin
+        }
     }
 
 };
 
 
 const ctx = document.getElementById('myChart');
-var doughnutChart = new Chart (ctx, config);
+Chart.pluginService.register(plugin);
+var doughnutChart = new Chart(ctx, config);
