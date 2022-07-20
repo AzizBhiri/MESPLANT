@@ -299,14 +299,14 @@ for(let i = 0; i < list.length; i++) {
 
 var colors1 = []; 
 for (let i = 0; i < unique_product_names.length; i++) {
-    var random_color = "#" + Math.floor(Math.random()*16777215).toString(16).padStart(6, '0').toUpperCase();
-    colors1.push(random_color);
+    //var random_color = "#" + Math.floor(Math.random()*16777215).toString(16).padStart(6, '0').toUpperCase();
+    colors1.push('green');
 }
 
 var colors2 = []; 
 for (let i = 0; i < unique_product_names.length; i++) {
-    var random_color = "#" + Math.floor(Math.random()*16777215).toString(16).padStart(6, '0').toUpperCase();
-    colors2.push(random_color);
+    //var random_color = "#" + Math.floor(Math.random()*16777215).toString(16).padStart(6, '0').toUpperCase();
+    colors2.push('red');
 }
 
 
