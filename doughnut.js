@@ -39,9 +39,9 @@ var t = arr[Math.floor(Math.random() * arr.length)];
 //Generates random name
 function makeRand() {
     var result           = '';
-    var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     var charactersLength = characters.length;
-    for ( var i = 0; i < 10; i++ ) {
+    for ( var i = 0; i < 1; i++ ) {
       result += characters.charAt(Math.floor(Math.random() * charactersLength));
    }
    return result;
@@ -261,3 +261,46 @@ const config_product = {
 
 const ctx_product = document.getElementById('myChart_product');
 var doughnutChart_product = new Chart(ctx_product, config_product);
+
+
+//Bar
+var product_names = [];
+for (let i = 0; i < list.length; i++) {
+    product_names.push(list[i].Product_name);
+}
+var unique_product_names = [...new Set(product_names)];
+
+var product_count = [];
+for (let i = 0; i < unique_product_names.length; i++) {
+    product_count.push(0);
+}
+
+for(let i = 0; i < list.length; i++) {
+    product_count[unique_product_names.indexOf(list[i].Product_name)] += list[i].Valid + list[i].Scrap;
+}
+
+var colors = []; 
+for (let i = 0; i < unique_product_names.length; i++) {
+    var random_color = "#" + Math.floor(Math.random()*16777215).toString(16).padStart(6, '0').toUpperCase();
+    colors.push(random_color);
+}
+
+const data_bar = {
+    labels: unique_product_names,
+      datasets: [{
+        label: 'Products',
+        data: product_count,
+        backgroundColor: colors,
+        //minBarLength: 10,
+        hoverBorderWidth: 2,
+        hoverBorderColor: 'black'
+      }]
+};
+
+const config_bar = {
+    type: 'bar',
+    data: data_bar
+}
+
+const ctx_bar = document.getElementById('myBar_product');
+var barChart_product = new Chart(ctx_bar, config_bar);
