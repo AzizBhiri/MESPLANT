@@ -16,7 +16,7 @@ body {
 .timeAxis {
     height: 4px;
     background-color: black;
-    width: calc(60vw - 12px);
+    width: calc(60vw - 14px);
     position: absolute;
     top: calc(25% - 20px);
     left: calc(20vw + 28px);
@@ -59,7 +59,7 @@ body {
     width: 4px;
     position: absolute;
     top: calc(25% - 22px);
-    left: calc(80vw + 16px);
+    left: calc(80vw + 10px);
 }
 
 .limit{
@@ -75,7 +75,7 @@ body {
 .threeH {
     position: absolute;
     top: calc(25% - 45px);
-    left: calc(80vw + 8px);
+    left: calc(80vw + 2px);
 }
 
 .barsContainer {
