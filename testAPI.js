@@ -175,10 +175,16 @@ function blockCorrector(list_of_blocks) {
 
 const json = {"workstationId":1,"data":[{"id":130,"isRunning":true,"downtimeTypeId":null,"startedAt":"2022-07-22T00:00:00","finishedAt":"2022-07-22T00:39:07.377","productId":null,"valid":3,"scrap":1,"downtimeTypeName":"","productName":""},{"id":132,"isRunning":false,"downtimeTypeId":4,"startedAt":"2022-07-22T00:39:07.377","finishedAt":"2022-07-22T00:43:04.937","productId":null,"valid":0,"scrap":0,"downtimeTypeName":"Pause","productName":""},{"id":134,"isRunning":false,"downtimeTypeId":1,"startedAt":"2022-07-22T00:43:04.937","finishedAt":"2022-07-22T01:20:09.867","productId":null,"valid":0,"scrap":0,"downtimeTypeName":"Out of service","productName":""},{"id":133,"isRunning":true,"downtimeTypeId":null,"startedAt":"2022-07-22T01:20:09.867","finishedAt":"2022-07-22T01:39:11.753","productId":null,"valid":19,"scrap":0,"downtimeTypeName":"","productName":""},{"id":135,"isRunning":false,"downtimeTypeId":4,"startedAt":"2022-07-22T01:39:11.753","finishedAt":"2022-07-22T01:52:09.16","productId":null,"valid":0,"scrap":0,"downtimeTypeName":"Pause","productName":""},{"id":137,"isRunning":false,"downtimeTypeId":1,"startedAt":"2022-07-22T01:52:09.16","finishedAt":"2022-07-22T02:00:00","productId":null,"valid":0,"scrap":0,"downtimeTypeName":"Out of service","productName":""}]}
 
-array_of_jsons = JSON.parse(JSON.stringify(json));
-var list_of_blocks = decomposeTolistOfblocks(array_of_jsons);
-list_of_blocks = blockCorrector(list_of_blocks);
-console.log(list_of_blocks);
+const json2 = {"workstationId":1,"data":[{"id":137,"isRunning":false,"downtimeTypeId":1,"startedAt":"2022-07-22T02:00:00","finishedAt":"2022-07-22T02:05:14.487","productId":null,"valid":0,"scrap":0,"downtimeTypeName":"Out of service","productName":""},{"id":136,"isRunning":true,"downtimeTypeId":null,"startedAt":"2022-07-22T02:05:14.487","finishedAt":"2022-07-22T02:30:16.13","productId":null,"valid":25,"scrap":0,"downtimeTypeName":"","productName":""},{"id":138,"isRunning":false,"downtimeTypeId":8,"startedAt":"2022-07-22T02:30:16.13","finishedAt":"2022-07-22T02:43:15.423","productId":null,"valid":0,"scrap":0,"downtimeTypeName":"Engine failure","productName":""},{"id":140,"isRunning":false,"downtimeTypeId":1,"startedAt":"2022-07-22T02:43:15.423","finishedAt":"2022-07-22T03:00:00","productId":null,"valid":0,"scrap":0,"downtimeTypeName":"Out of service","productName":""}]}
+
+function fixJson(json) {
+    var array_of_jsons = JSON.parse(JSON.stringify(json));
+    var list_of_blocks = decomposeTolistOfblocks(array_of_jsons);
+    list_of_blocks = blockCorrector(list_of_blocks);
+    return list_of_blocks;
+}
+
+var list_of_blocks = fixJson(json).concat(fixJson(json2));
 
 var rt = document.querySelector(':root');
 // Create a function for getting a variable value

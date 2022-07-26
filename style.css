@@ -43,13 +43,13 @@ body {
     width: 4px;
     position: absolute;
     top: calc(25% - 22px);
-    left: calc(50vw + 22px);
+    left: calc(50vw + 18px);
 }
 
 .twoH {
     position: absolute;
     top: calc(25% - 45px);
-    left: calc(50vw + 14px);
+    left: calc(50vw + 10px);
 }
 
 
@@ -97,7 +97,7 @@ body {
     /* border-style: solid;
     border-width: 1px;
     border-color: black; */
-    border-radius: 10px;
+    border-radius: 4px;
     /* -webkit-box-decoration-break: slice;
     -o-box-decoration-break: slice;
     box-decoration-break: slice; */
