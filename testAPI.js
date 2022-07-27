@@ -50,7 +50,7 @@ function getOeeDataBaseByDate(workstation, startDate, endDate, callback) {
  
 function millisecondToDate(ms) {
     var date = new Date(ms).toLocaleString('sv');
-    return date
+    return date;
 }
 
 function dateToMilliseconds(date) {
@@ -154,6 +154,12 @@ function dayStartMilli(ms) {
     return (ms - (ms % 86400000));
 }
 
+function nextHourMilli(ms) {
+    //let nearest_hour = new Date(Math.ceil(ms / 3600000) * 3600000);
+    return Math.ceil(ms / 3600000) * 3600000;
+    //return nearest_hour;    
+}
+
 function timeCorrector(ms) {
     return localToUtc(dayStartMilli(ms) + 86400000);
 }
@@ -173,18 +179,42 @@ function blockCorrector(list_of_blocks) {
 // }
 // getOeeDataBaseByDate(1, '2022-07-22 00:00:00', '2022-07-22 04:00:00', callback);
 
-const json = {"workstationId":1,"data":[{"id":130,"isRunning":true,"downtimeTypeId":null,"startedAt":"2022-07-22T00:00:00","finishedAt":"2022-07-22T00:39:07.377","productId":null,"valid":3,"scrap":1,"downtimeTypeName":"","productName":""},{"id":132,"isRunning":false,"downtimeTypeId":4,"startedAt":"2022-07-22T00:39:07.377","finishedAt":"2022-07-22T00:43:04.937","productId":null,"valid":0,"scrap":0,"downtimeTypeName":"Pause","productName":""},{"id":134,"isRunning":false,"downtimeTypeId":1,"startedAt":"2022-07-22T00:43:04.937","finishedAt":"2022-07-22T01:20:09.867","productId":null,"valid":0,"scrap":0,"downtimeTypeName":"Out of service","productName":""},{"id":133,"isRunning":true,"downtimeTypeId":null,"startedAt":"2022-07-22T01:20:09.867","finishedAt":"2022-07-22T01:39:11.753","productId":null,"valid":19,"scrap":0,"downtimeTypeName":"","productName":""},{"id":135,"isRunning":false,"downtimeTypeId":4,"startedAt":"2022-07-22T01:39:11.753","finishedAt":"2022-07-22T01:52:09.16","productId":null,"valid":0,"scrap":0,"downtimeTypeName":"Pause","productName":""},{"id":137,"isRunning":false,"downtimeTypeId":1,"startedAt":"2022-07-22T01:52:09.16","finishedAt":"2022-07-22T02:00:00","productId":null,"valid":0,"scrap":0,"downtimeTypeName":"Out of service","productName":""}]}
+function check(block) {
+    if (Math.floor(block.startedAt / 3600000 ) < Math.floor(block.finishedAt / 3600000 )) {
+        return true;
+    }
+    return false;
+}
 
-const json2 = {"workstationId":1,"data":[{"id":137,"isRunning":false,"downtimeTypeId":1,"startedAt":"2022-07-22T02:00:00","finishedAt":"2022-07-22T02:05:14.487","productId":null,"valid":0,"scrap":0,"downtimeTypeName":"Out of service","productName":""},{"id":136,"isRunning":true,"downtimeTypeId":null,"startedAt":"2022-07-22T02:05:14.487","finishedAt":"2022-07-22T02:30:16.13","productId":null,"valid":25,"scrap":0,"downtimeTypeName":"","productName":""},{"id":138,"isRunning":false,"downtimeTypeId":8,"startedAt":"2022-07-22T02:30:16.13","finishedAt":"2022-07-22T02:43:15.423","productId":null,"valid":0,"scrap":0,"downtimeTypeName":"Engine failure","productName":""},{"id":140,"isRunning":false,"downtimeTypeId":1,"startedAt":"2022-07-22T02:43:15.423","finishedAt":"2022-07-22T03:00:00","productId":null,"valid":0,"scrap":0,"downtimeTypeName":"Out of service","productName":""}]}
+
+// Function to divide a block
+function splitBlock(block, splitPoint) {
+    let temp = block.finishedAt;
+    block.finishedAt = splitPoint;
+    var new_block = new OeeDataBase(block.isRunning, splitPoint, temp, block.downtimeTypeName, block.productId, block.productName, Math.floor(block.valid * ((temp - splitPoint)) / block.getBlockLength()), Math.floor(block.scrap * ((temp - splitPoint)) / block.getBlockLength()));
+    block.valid = block.valid - new_block.valid;
+    block.scrap = block.scrap - new_block.scrap;
+    return new_block;
+}
+
+
+
+const json = {"workstationId":1,"data":[{"id":130,"isRunning":true,"downtimeTypeId":null,"startedAt":"2022-07-22T00:00:00","finishedAt":"2022-07-22T00:39:07.377","productId":null,"valid":3,"scrap":1,"downtimeTypeName":"","productName":""},{"id":132,"isRunning":false,"downtimeTypeId":4,"startedAt":"2022-07-22T00:39:07.377","finishedAt":"2022-07-22T00:43:04.937","productId":null,"valid":0,"scrap":0,"downtimeTypeName":"Pause","productName":""},{"id":134,"isRunning":false,"downtimeTypeId":1,"startedAt":"2022-07-22T00:43:04.937","finishedAt":"2022-07-22T01:20:09.867","productId":null,"valid":0,"scrap":0,"downtimeTypeName":"Out of service","productName":""},{"id":133,"isRunning":true,"downtimeTypeId":null,"startedAt":"2022-07-22T01:20:09.867","finishedAt":"2022-07-22T01:39:11.753","productId":null,"valid":19,"scrap":0,"downtimeTypeName":"","productName":""},{"id":135,"isRunning":false,"downtimeTypeId":4,"startedAt":"2022-07-22T01:39:11.753","finishedAt":"2022-07-22T01:52:09.16","productId":null,"valid":0,"scrap":0,"downtimeTypeName":"Pause","productName":""},{"id":137,"isRunning":false,"downtimeTypeId":1,"startedAt":"2022-07-22T01:52:09.16","finishedAt":"2022-07-22T02:05:14.487","productId":null,"valid":0,"scrap":0,"downtimeTypeName":"Out of service","productName":""},{"id":136,"isRunning":true,"downtimeTypeId":null,"startedAt":"2022-07-22T02:05:14.487","finishedAt":"2022-07-22T02:30:16.13","productId":null,"valid":25,"scrap":0,"downtimeTypeName":"","productName":""},{"id":138,"isRunning":false,"downtimeTypeId":8,"startedAt":"2022-07-22T02:30:16.13","finishedAt":"2022-07-22T02:43:15.423","productId":null,"valid":0,"scrap":0,"downtimeTypeName":"Engine failure","productName":""},{"id":140,"isRunning":false,"downtimeTypeId":1,"startedAt":"2022-07-22T02:43:15.423","finishedAt":"2022-07-22T03:00:00","productId":null,"valid":0,"scrap":0,"downtimeTypeName":"Out of service","productName":""}]}
 
 function fixJson(json) {
     var array_of_jsons = JSON.parse(JSON.stringify(json));
     var list_of_blocks = decomposeTolistOfblocks(array_of_jsons);
     list_of_blocks = blockCorrector(list_of_blocks);
+    for (let i = 0; i < list_of_blocks.length; i++) {
+        if (check(list_of_blocks[i])) {
+            let x = splitBlock(list_of_blocks[i], nextHourMilli(list_of_blocks[i].startedAt));
+            list_of_blocks.splice(i + 1, 0, x);
+        }
+    }
     return list_of_blocks;
 }
 
-var list_of_blocks = fixJson(json).concat(fixJson(json2));
+var list_of_blocks = fixJson(json);
 
 var rt = document.querySelector(':root');
 // Create a function for getting a variable value
