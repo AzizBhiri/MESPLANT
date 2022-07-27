@@ -191,9 +191,10 @@ function check(block) {
 function splitBlock(block, splitPoint) {
     let temp = block.finishedAt;
     block.finishedAt = splitPoint;
-    var new_block = new OeeDataBase(block.isRunning, splitPoint, temp, block.downtimeTypeName, block.productId, block.productName, Math.floor(block.valid * ((temp - splitPoint)) / block.getBlockLength()), Math.floor(block.scrap * ((temp - splitPoint)) / block.getBlockLength()));
+    var new_block = new OeeDataBase(block.isRunning, splitPoint, temp, block.downtimeTypeName, block.productId, block.productName, Math.floor(block.valid * ((temp - splitPoint)) / (temp - block.startedAt)), Math.floor(block.scrap * ((temp - splitPoint)) /  (temp - block.startedAt)));
     block.valid = block.valid - new_block.valid;
     block.scrap = block.scrap - new_block.scrap;
+    console.log(block.valid, block.scrap, new_block.valid, new_block.scrap);
     return new_block;
 }
 
