@@ -10,28 +10,39 @@
     <img src="elplant_300.png">
     <br>    
     <div class="login">    
-    <form id="login" method="get" action="">    
-        <label><b>Username     
-        </b>    
-        </label>    
-        <input type="text" name="Uname" id="Uname" placeholder="Username">    
-        <br><br>    
-        <label><b>Password     
-        </b>    
-        </label>    
-        <input type="Password" name="Pass" id="Pass" placeholder="Password">    
-        <br><br>
-        <a href="./index.html">    
-            <input type="button" name="log" id="log" value="Log In">
-        </a>       
-        <br><br>    
-        <input type="checkbox" id="check">    
-        <span>Remember me</span>    
-        <br><br>
-        <a href="./homePage.html">
-            <input type="button" name="home" id="home" value="Home">
-        </a> 
-    </form>     
-</div>    
+        <form id="login" method="get" action="">    
+            <label><b>Username     
+            </b>    
+            </label>    
+            <input type="text" name="Uname" id="Uname" placeholder="Username">    
+            <br><br>    
+            <label><b>Password     
+            </b>    
+            </label>    
+            <input type="Password" name="Pass" id="Pass" placeholder="Password">    
+            <br><br>
+            <!-- <a href="./index.html">     -->
+                <input type="button" name="log" id="log" value="Log In" onclick="goToDailyview()">
+            <!-- </a>        -->
+            <br><br>    
+            <input type="checkbox" id="check">    
+            <span>Remember me</span>    
+            <br><br>
+            <a href="./homePage.html">
+                <input type="button" name="home" id="home" value="Home">
+            </a>
+        </form>     
+    </div>
+    <script>
+        var username = 'admin';
+        var password = 'admin'
+        function goToDailyview() {
+            if (document.getElementById('Uname').value === username && document.getElementById('Pass').value === password) {
+                window.location.href = "./index.html";
+            } else {
+                alert('Username or Password uncorrect !');
+            }
+        }
+    </script>    
 </body>    
 </html>

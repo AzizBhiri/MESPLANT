@@ -9,8 +9,8 @@
 }
 
 body {
-    background-color:#6abadeba;
-
+    /* background-color:#6abadeba; */
+    background-color: white;
 }
 
 .timeAxis {
@@ -82,7 +82,8 @@ body {
     width: 60vw;
     height: 50vh;
     border-width: 8px;
-    border-color: black;
+    /* border-color: black; */
+    border-color: white;
     border-style: solid;
     border-radius: 6px;
     padding: 20px;
@@ -215,6 +216,7 @@ body {
     position: absolute;
     top: 100px;
     right: 50px;
+    visibility: hidden;
 }
 
 #charts:hover {

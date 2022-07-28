@@ -86,10 +86,6 @@ function doAll(json) {
     }
     //Adds empty block at beginning of list_of_blocks if call doesn't start from beginning of day
     function blockCorrector(list_of_blocks) {
-        // if (list_of_blocks.length === 0) {
-        //     var emptyBlock = new OeeDataBase(null, timeCorrector(new Date), Date.now(), "No Data", null, null, null, null);
-        //     list_of_blocks.unshift(emptyBlock);
-        // }
         if ((list_of_blocks[0].startedAt - timeCorrector(list_of_blocks[0].startedAt)) > 0) {
             var emptyBlock = new OeeDataBase(null, timeCorrector(list_of_blocks[0].startedAt), list_of_blocks[0].startedAt, "No Data", null, null, null, null);
             list_of_blocks.unshift(emptyBlock);
@@ -320,10 +316,13 @@ function utcToLocal(time) {
 const currentDayStart = millisecondsToDate(utcToLocal(dayStartMilli(Date.now())));
 
 // create oee request
+var startDate = '2022-07-28 08:00:00';
+var endDate = '';
 const oeeReq = createRequest(
-    createOeeUrl(1, '2022-07-28 08:00:00', ''),
+    createOeeUrl(1, startDate, endDate),
     'GET'
 );
+
 
 // get prommise with oeeReq
 function getDataFromAPI() {
@@ -362,7 +361,7 @@ oeeData();
 //reload page every 1s
 setTimeout(function(){
     window.location.reload(1);
-}, 10000);
+}, 5000);
 
 
 //getOeeDataBaseByDate(1, '2022-07-27 11:00:00', '2022-07-27 12:00:00', callback);

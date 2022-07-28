@@ -6,14 +6,13 @@ body
     font-family: 'Arial';  
 }  
 .login{  
-        width: 382px;  
-        overflow: hidden;  
-        margin: auto;  
-        margin: 20 0 0 450px;  
-        padding: 80px;  
-        background: #23463f;  
-        border-radius: 15px ;  
-          
+    width: 382px;  
+    overflow: hidden;  
+    margin: auto;  
+    margin: 20 0 0 450px;  
+    padding: 80px;  
+    background: #23463f;  
+    border-radius: 15px ;          
 } 
 
 img{  
@@ -21,7 +20,8 @@ img{
     display: block;
     margin-left: auto;
     margin-right: auto;
-    width: 30%;  
+    width: 3 40vw;
+    transform: scale(0.5);    
 }
 
 label{  
@@ -42,17 +42,19 @@ label{
     border-radius: 3px;  
     padding-left: 8px;  
       
-}  
+}
+
 #log{  
-    width: 300px;  
+    width: 310px;  
     height: 30px;  
     border: none;  
-    border-radius: 17px;  
+    border-radius: 10px;  
     padding-left: 7px;  
     color: #08ffd1;
     font-size: 20px; 
-    font-weight: bolder;  
-
+    font-weight: bolder;
+    position: relative;
+    margin-right: 80px; 
 }
 
 #log:hover {
@@ -82,8 +84,4 @@ label{
 span{  
     color: white;  
     font-size: 17px;  
-}  
-a{  
-    float: right;  
-    background-color: grey;  
-}  
+}   
