@@ -12,13 +12,13 @@ function doAll(json) {
 
     //utc to local time in milliseconds since 1970
     function utcToLocal(time) {
-        var offset_in_ms = new Date().getTimezoneOffset() * 1000 * 60; 
+        var offset_in_ms = new Date().getTimezoneOffset() * 1000 * 60;
         return time - offset_in_ms;
     }
 
     //local time in milliseconds since 1970 to utc
     function localToUtc(time) {
-        var offset_in_ms = new Date().getTimezoneOffset() * 1000 * 60; 
+        var offset_in_ms = new Date().getTimezoneOffset() * 1000 * 60;
         return time + offset_in_ms;
     }
 
@@ -37,7 +37,7 @@ function doAll(json) {
         }
 
         getBlockLength() {
-            return this.FinishedAt - this.StartedAt;
+            return this.finishedAt - this.startedAt;
         }
 
     }
@@ -66,26 +66,30 @@ function doAll(json) {
         return localToUtc(dayStartMilli(ms) + 86400000);
     }
 
-    
-function check(block) {
-    if (Math.floor(block.startedAt / 3600000 ) < Math.floor(block.finishedAt / 3600000 )) {
-        return true;
+
+    function check(block) {
+        if (Math.floor(block.startedAt / 3600000) < Math.floor(block.finishedAt / 3600000)) {
+            return true;
+        }
+        return false;
     }
-    return false;
-}
 
 
-// Function to divide a block
-function splitBlock(block, splitPoint) {
-    let temp = block.finishedAt;
-    block.finishedAt = splitPoint;
-    var new_block = new OeeDataBase(block.isRunning, splitPoint, temp, block.downtimeTypeName, block.productId, block.productName, Math.floor(block.valid * ((temp - splitPoint)) /  (temp - block.startedAt)), Math.floor(block.scrap * ((temp - splitPoint)) /  (temp - block.startedAt)));
-    block.valid = block.valid - new_block.valid;
-    block.scrap = block.scrap - new_block.scrap;
-    return new_block;
-}
+    // Function to divide a block
+    function splitBlock(block, splitPoint) {
+        let temp = block.finishedAt;
+        block.finishedAt = splitPoint;
+        var new_block = new OeeDataBase(block.isRunning, splitPoint, temp, block.downtimeTypeName, block.productId, block.productName, Math.floor(block.valid * ((temp - splitPoint)) / (temp - block.startedAt)), Math.floor(block.scrap * ((temp - splitPoint)) / (temp - block.startedAt)));
+        block.valid = block.valid - new_block.valid;
+        block.scrap = block.scrap - new_block.scrap;
+        return new_block;
+    }
     //Adds empty block at beginning of list_of_blocks if call doesn't start from beginning of day
     function blockCorrector(list_of_blocks) {
+        // if (list_of_blocks.length === 0) {
+        //     var emptyBlock = new OeeDataBase(null, timeCorrector(new Date), Date.now(), "No Data", null, null, null, null);
+        //     list_of_blocks.unshift(emptyBlock);
+        // }
         if ((list_of_blocks[0].startedAt - timeCorrector(list_of_blocks[0].startedAt)) > 0) {
             var emptyBlock = new OeeDataBase(null, timeCorrector(list_of_blocks[0].startedAt), list_of_blocks[0].startedAt, "No Data", null, null, null, null);
             list_of_blocks.unshift(emptyBlock);
@@ -105,7 +109,7 @@ function splitBlock(block, splitPoint) {
         }
         return list_of_blocks;
     }
-    
+
     var list_of_blocks = fixJson(json);
 
     var rt = document.querySelector(':root');
@@ -116,24 +120,24 @@ function splitBlock(block, splitPoint) {
         // Alert the value of the --col variable
         alert("The value of --col is: " + rs.getPropertyValue('--col'));
     }
-    
+
     // Create a function for setting a variable value
     function color_set(i, x) {
         // Set the value of variable --col to another value
-        rt.style.setProperty('--col'+i.toString(), x);
+        rt.style.setProperty('--col' + i.toString(), x);
     }
 
     //color_set('pink');
 
     function width_set(i, x) {
-        rt.style.setProperty('--wid'+i.toString(), x);
+        rt.style.setProperty('--wid' + i.toString(), x);
     }
 
     //Blocks width is dependent on time : 2H (7 200 000 ms) === 60vw - 40px
     function drawBarDay(list_of_blocks) {
         for (let i = 0; i < list_of_blocks.length; i++) {
             if (list_of_blocks[i].isRunning) {
-            color_set(i, 'green');
+                color_set(i, 'green');
             } else {
                 /*if (list_of_blocks[i].downtimeTypeName === "Unknown") {
                     color_set(i, 'red');
@@ -147,9 +151,9 @@ function splitBlock(block, splitPoint) {
                     color_set(i, 'Red');
                 }
             }
-        
+
             var width = (utcToLocal(list_of_blocks[i].finishedAt) - utcToLocal(list_of_blocks[i].startedAt)) / 7200000;
-            let w = "calc(" + width.toString() + "*(60vw - 17px))"; 
+            let w = "calc(" + width.toString() + "*(60vw - 17px))";
             width_set(i, w);
         }
 
@@ -183,7 +187,7 @@ function splitBlock(block, splitPoint) {
                 //newProd.onmouseout = "hideMessage()";
                 dotContainer.appendChild(newProd);
             }
-            for (let j = 0; j < list_of_blocks[i].scrap; j ++) {
+            for (let j = 0; j < list_of_blocks[i].scrap; j++) {
                 var newProd = document.createElement('div');
                 newProd.className = 'dotS';
                 //newProd.onmouseover = "showMessage()";
@@ -191,7 +195,7 @@ function splitBlock(block, splitPoint) {
                 dotContainer.appendChild(newProd);
             }
         }
-            
+
         newDiv.appendChild(dotContainer);
         container.appendChild(newDiv);
     }
@@ -199,9 +203,9 @@ function splitBlock(block, splitPoint) {
     //create css classes in loop
     for (let i = 0; i < list_of_blocks.length; i++) {
         //document.getElementsByClassName('bar'+i.toString()).classlist_of_blocks.add('bar'+i.toString());
-        elt = document.getElementById('bar'+i.toString());
-        elt.style.height = "50px";    
-        elt.style.width = "var(--wid" + i.toString() + ")";    
+        elt = document.getElementById('bar' + i.toString());
+        elt.style.height = "50px";
+        elt.style.width = "var(--wid" + i.toString() + ")";
         elt.style.backgroundColor = "var(--col" + i.toString() + ")";
         drawBarDay(list_of_blocks);
     }
@@ -228,53 +232,154 @@ function scrollDown() {
 }
 
 //call API
-function getOeeDataBaseByDate(workstation, startDate, endDate, callback) {
-    const Http = new XMLHttpRequest();
-    const url='http://212.200.168.71/productionmanagement/api/oeedata?workstationId=' + workstation.toString() + '&&from=' + startDate.toString() + '&&to=' + endDate.toString();
-    Http.open("GET", url);
+// function getOeeDataBaseByDate(workstation, startDate, endDate, callback) {
+//     const Http = new XMLHttpRequest();
+//     const url = 'http://212.200.168.71/productionmanagement/api/oeedata?workstationId=' + workstation.toString() + '&&from=' + startDate.toString() + '&&to=' + endDate.toString();
+//     Http.open("GET", url);
 
-    // //normal
-    // // Http.onreadystatechange = (e) => {
-    // //     //return Http.responseText;
-    // //     document.write(Http.responseText);
-    // // }
-    // // Http.send();
+//     // //normal
+//     // // Http.onreadystatechange = (e) => {
+//     // //     //return Http.responseText;
+//     // //     document.write(Http.responseText);
+//     // // }
+//     // // Http.send();
 
-    //callback
-    Http.onreadystatechange = function() {     
-        if (Http.readyState == 4) {
-            if (Http.status == 200) {
+//     //callback
+//     Http.onreadystatechange = function () {
+//         if (Http.readyState == 4) {
+//             if (Http.status == 200) {
 
-                // pass the response to the callback function
-                callback(null, Http.responseText);
+//                 // pass the response to the callback function
+//                 callback(null, Http.responseText);
 
-            } else {
-                // pass the error to the callback function
-                callback(Http.statusText);
-            }
+//             } else {
+//                 // pass the error to the callback function
+//                 callback(Http.statusText);
+//             }
+//         }
+//     }
+//     Http.send(null);
+// }
+
+
+// function saveTolocalStorage(name, data) {
+//     localStorage.setItem(name, data);
+// }
+
+// async function callback(err, res) {
+//     if (err) alert(err);
+//     if (res) {
+//         saveTolocalStorage('data', res);
+//         //console.log(res);
+//         //localStorage.setItem('data', res);
+//     }
+// }
+
+
+///new code for API
+
+
+
+/**
+ * Methods for creating requests.
+ * @param {*} url 
+ * @param {*} method 
+ * @returns 
+ */
+function createRequest(url, method) {
+    return new Request(url, {
+        method: method,
+    });
+}
+
+/**
+ * 
+ * @param {*} workStation 
+ * @param {*} startDate 
+ * @param {*} endDate 
+ * @returns 
+ */
+ function createOeeUrl(workStation, startDate, endDate) {
+    return `http://212.200.168.71/productionmanagement/api/oeedata?workstationId=${workStation}&&from=${startDate}&&to=${endDate}`;
+}
+
+//Time Correctors
+function millisecondsToDate(ms) {
+    var date = new Date(ms).toLocaleString('sv');
+    return date
+}
+const currentDate = millisecondsToDate(Date.now());
+
+function dayStartMilli(ms) {
+    return (ms - (ms % 86400000));
+}
+function utcToLocal(time) {
+    var offset_in_ms = new Date().getTimezoneOffset() * 1000 * 60; 
+    return time + offset_in_ms;
+}
+const currentDayStart = millisecondsToDate(utcToLocal(dayStartMilli(Date.now())));
+
+// create oee request
+const oeeReq = createRequest(
+    createOeeUrl(1, '2022-07-28 08:00:00', ''),
+    'GET'
+);
+
+// get prommise with oeeReq
+function getDataFromAPI() {
+    return fetch(oeeReq).then(data =>{
+        try {
+            return data.json();
+        } catch(error) {
+            handleOeeError('error');
         }
+       
+        }).catch(handleOeeError);
+}
+
+//handle error
+const handleOeeError = (error) => {
+    alert(error)
+    console.log('ERROR');
+    return;
+}
+
+let data;
+//get data and use it 
+async function oeeData() {
+    try {
+        data = await getDataFromAPI();
+        //after data is filled you process it
+        doAll(data);
+        scrollDown();
+    } catch (error) {
+        throw error;
     }
-    Http.send(null);
 }
 
+oeeData();
 
-function saveToLocalstorage(name, data) {
-    localStorage.setItem(name, data);
-}
-
-async function callback(err, res) {
-        if (err) alert(err);
-        if (res) {
-            //doAll(res);
-            //console.log(res);
-            saveToLocalstorage('data', res);
-        }
-}
+//reload page every 1s
+setTimeout(function(){
+    window.location.reload(1);
+}, 10000);
 
 
-getOeeDataBaseByDate(1, '2022-07-22 00:00:00', '2022-07-22 12:45:00', callback);
-var retrieved = JSON.parse(localStorage.getItem('data'));
+//getOeeDataBaseByDate(1, '2022-07-27 11:00:00', '2022-07-27 12:00:00', callback);
+
+//var retrieved = JSON.parse(localStorage.getItem('data'));
 //console.log(retrieved);
-doAll(retrieved);
+//doAll(retrieved);
 
-scrollDown();
+
+
+
+
+
+
+
+
+
+
+
+

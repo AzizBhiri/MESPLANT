@@ -216,6 +216,7 @@ function fixJson(json) {
 }
 
 var list_of_blocks = fixJson(json);
+//console.log(list_of_blocks);
 
 var rt = document.querySelector(':root');
 // Create a function for getting a variable value
@@ -332,6 +333,13 @@ function show() {
 function scrollDown() {
     document.getElementById("barsContainer").scrollTop = document.getElementById("barsContainer").scrollHeight;
 }
+
+
+//reload page every 1s
+// setTimeout(function(){
+//     window.location.reload(1);
+// }, 1000);
+
 scrollDown();
 
 

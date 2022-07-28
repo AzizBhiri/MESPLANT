@@ -97,12 +97,12 @@ body {
     /* border-style: solid;
     border-width: 1px;
     border-color: black; */
-    border-radius: 0px;
+    border-radius: 4px;
     /* -webkit-box-decoration-break: slice;
     -o-box-decoration-break: slice;
     box-decoration-break: slice; */
-    /* font-size: 2px; */
-
+    /* font-size: 2px; 
+    opacity: 0.8;*/
 }
 
 .bar:hover {
@@ -150,10 +150,11 @@ body {
 }
 
 .btn {
-    height: 40px;
+    height: 100px;
     width: 80px;
     font-size: 15px;
     font-weight: bold;
+    visibility: hidden;
 }
 
 .btn:hover {
