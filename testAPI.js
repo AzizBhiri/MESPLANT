@@ -171,14 +171,26 @@ function prevHourMilli(ms) {
 }
 
 function timeCorrector(ms) {
-    return localToUtc(twoHoursStartMilli(ms) + 7200000);
+    // return localToUtc(twoHoursStartMilli(ms) + 7200000);
+    return localToUtc(dayStartMilli(ms));
 }
 
 //Adds empty block at beginning of list_of_blocks if call doesn't start from beginning of day
 function blockCorrector(list_of_blocks) {
-    if ((list_of_blocks[0].startedAt - timeCorrector(list_of_blocks[0].startedAt)) > 0) {
+    if ((list_of_blocks.length === 0) || (list_of_blocks[0].startedAt - timeCorrector(list_of_blocks[0].startedAt)) > 0) {
         var emptyBlock = new OeeDataBase(null, timeCorrector(list_of_blocks[0].startedAt), list_of_blocks[0].startedAt, "No data", null, null, null, null);
         list_of_blocks.unshift(emptyBlock);
+    }
+
+    return list_of_blocks;
+}
+
+function gapCorrector(list_of_blocks) {
+    for (let i = 0; i < list_of_blocks.length - 1; i++) {
+        if (list_of_blocks[i+1].startedAt > list_of_blocks[i].finishedAt) {
+            var emptyBlock = new OeeDataBase(null, list_of_blocks[i].finishedAt, list_of_blocks[i+1].startedAt, "No data", null, null, null, null);
+            list_of_blocks.splice(i + 1, 0, emptyBlock);
+        }
     }
     return list_of_blocks;
 }
@@ -201,7 +213,7 @@ function check(block) {
 function splitBlock(block, splitPoint) {
     let temp = block.finishedAt;
     block.finishedAt = splitPoint;
-    var new_block = new OeeDataBase(block.isRunning, splitPoint+1, temp, block.downtimeTypeName, block.productId, block.productName, Math.floor(block.valid * ((temp - splitPoint)) / (temp - block.startedAt)), Math.floor(block.scrap * ((temp - splitPoint)) /  (temp - block.startedAt)));
+    var new_block = new OeeDataBase(block.isRunning, splitPoint + 1, temp, block.downtimeTypeName, block.productId, block.productName, Math.floor(block.valid * ((temp - splitPoint)) / (temp - block.startedAt)), Math.floor(block.scrap * ((temp - splitPoint)) /  (temp - block.startedAt)));
     block.valid = block.valid - new_block.valid;
     block.scrap = block.scrap - new_block.scrap;
     return new_block;
@@ -221,8 +233,7 @@ function splitBlock(block, splitPoint) {
 
 // }
 
-const json = {"workstationId":1,"data":[{"id":130,"isRunning":true,"downtimeTypeId":null,"startedAt":"2022-07-22T00:25:00","finishedAt":"2022-07-22T03:15:00","productId":null,"valid":9,"scrap":4,"downtimeTypeName":"","productName":""},
-{"id":131,"isRunning":false,"downtimeTypeId":"2","startedAt":"2022-07-22T03:15:00","finishedAt":"2022-07-22T09:45:00","productId":null,"valid":2,"scrap":1,"downtimeTypeName":"Micro stop","productName":""}]}
+const json = {"workstationId":1,"data":[{"id":130,"isRunning":true,"downtimeTypeId":null,"startedAt":"2022-07-22T04:25:00","finishedAt":"2022-07-22T06:55:00","productId":null,"valid":9,"scrap":4,"downtimeTypeName":"","productName":""},{"id":131,"isRunning":false,"downtimeTypeId":"2","startedAt":"2022-07-22T08:35:00","finishedAt":"2022-07-22T11:55:00","productId":null,"valid":0,"scrap":0,"downtimeTypeName":"Micro stop","productName":""},{"id":132,"isRunning":false,"downtimeTypeId":"2","startedAt":"2022-07-22T12:25:00","finishedAt":"2022-07-22T13:45:00","productId":null,"valid":0,"scrap":0,"downtimeTypeName":"Micro stop","productName":""},{"id":133,"isRunning":false,"downtimeTypeId":"2","startedAt":"2022-07-22T13:45:00","finishedAt":"2022-07-22T14:55:00","productId":null,"valid":0,"scrap":0,"downtimeTypeName":"","productName":""}]}
 
 // function checkLength(list_of_blocks) {
 //     for(let i = 0; i < list_of_blocks.length; i++) {
@@ -234,15 +245,15 @@ const json = {"workstationId":1,"data":[{"id":130,"isRunning":true,"downtimeType
 function fixJson(json) {
     var array_of_jsons = JSON.parse(JSON.stringify(json));
     var list_of_blocks = decomposeTolistOfblocks(array_of_jsons);
+    list_of_blocks = blockCorrector(list_of_blocks);
+    list_of_blocks = gapCorrector(list_of_blocks);
+    console.log(list_of_blocks);
     for (let i = 0; i  < list_of_blocks.length; i++) {
-        console.log(list_of_blocks[i].getBlockLength());
         if (check(list_of_blocks[i])) {
             let x = splitBlock(list_of_blocks[i], nextHourMilli(list_of_blocks[i].startedAt));
             list_of_blocks.splice(i + 1, 0, x);
         }
-        if (i > 10) break;
     }
-    list_of_blocks = blockCorrector(list_of_blocks);
     return list_of_blocks;
 }
 

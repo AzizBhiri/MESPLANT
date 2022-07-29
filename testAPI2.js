@@ -67,7 +67,8 @@ function doAll(json) {
     }
 
     function timeCorrector(ms) {
-        return localToUtc(twoHourStartMilli(ms) + 7200000);
+        //return localToUtc(twoHourStartMilli(ms) + 7200000);
+        return localToUtc(dayStartMilli(ms));
     }
 
 
@@ -91,22 +92,33 @@ function doAll(json) {
     //Adds empty block at beginning of list_of_blocks if call doesn't start from beginning of day
     function blockCorrector(list_of_blocks) {
         if ((list_of_blocks[0].startedAt - timeCorrector(list_of_blocks[0].startedAt)) > 0) {
-            var emptyBlock = new OeeDataBase(null, timeCorrector(list_of_blocks[0].startedAt), list_of_blocks[0].startedAt, "No Data", null, null, null, null);
+            var emptyBlock = new OeeDataBase(null, timeCorrector(list_of_blocks[0].startedAt), list_of_blocks[0].startedAt, "No data", null, null, null, null);
             list_of_blocks.unshift(emptyBlock);
         }
         return list_of_blocks;
     }
 
+    function gapCorrector(list_of_blocks) {
+        for (let i = 0; i < list_of_blocks.length - 1; i++) {
+            if (list_of_blocks[i+1].startedAt > list_of_blocks[i].finishedAt) {
+                var emptyBlock = new OeeDataBase(null, list_of_blocks[i].finishedAt, list_of_blocks[i+1].startedAt, "No data", null, null, null, null);
+                list_of_blocks.splice(i + 1, 0, emptyBlock);
+            }
+        }
+        return list_of_blocks;
+    }
+    
     function fixJson(json) {
         var array_of_jsons = JSON.parse(JSON.stringify(json));
         var list_of_blocks = decomposeTolistOfblocks(array_of_jsons);
+        list_of_blocks = blockCorrector(list_of_blocks);
+        list_of_blocks = gapCorrector(list_of_blocks);  
         for (let i = 0; i < list_of_blocks.length; i++) {
             if (check(list_of_blocks[i])) {
                 let x = splitBlock(list_of_blocks[i], nextHourMilli(list_of_blocks[i].startedAt));
                 list_of_blocks.splice(i + 1, 0, x);
             }
         }
-        list_of_blocks = blockCorrector(list_of_blocks);
         return list_of_blocks;
     }
 
@@ -138,19 +150,17 @@ function doAll(json) {
         for (let i = 0; i < list_of_blocks.length; i++) {
             if (list_of_blocks[i].isRunning) {
                 color_set(i, 'green');
-            } else {
-                /*if (list_of_blocks[i].downtimeTypeName === "Unknown") {
-                    color_set(i, 'red');
-                } else */if (list_of_blocks[i].downtimeTypeName === "Out of service") {
-                    color_set(i, 'DimGray');
-                } else if (list_of_blocks[i].downtimeTypeName === "Micro Stop") {
-                    color_set(i, 'Yellow');
-                } else if (list_of_blocks[i].downtimeTypeName === "No Data") {
-                    color_set(i, 'White');
                 } else {
-                    color_set(i, 'Red');
+                    /*if (list_of_blocks[i].downtimeTypeName === "Unknown") {
+                        color_set(i, 'red');
+                    } else */if (list_of_blocks[i].downtimeTypeName === "No data") {
+                        color_set(i, 'DimGray');
+                    } else if (list_of_blocks[i].downtimeTypeName === "Micro stop") {
+                        color_set(i, 'Yellow');
+                    } else {
+                        color_set(i, 'Red');
+                    }
                 }
-            }
 
             var width = (utcToLocal(list_of_blocks[i].finishedAt) - utcToLocal(list_of_blocks[i].startedAt)) / 7200000;
             let w = "calc(" + width.toString() + "*(60vw - 17px))";
