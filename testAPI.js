@@ -135,7 +135,7 @@ class OeeDataBase {
     }
 
     getBlockLength() {
-        return this.FinishedAt - this.StartedAt;
+        return this.finishedAt - this.startedAt;
     }
 
 }
@@ -154,20 +154,30 @@ function dayStartMilli(ms) {
     return (ms - (ms % 86400000));
 }
 
+function twoHoursStartMilli(ms) {
+    return (ms - (ms % 7200000));
+}
+
+
 function nextHourMilli(ms) {
     //let nearest_hour = new Date(Math.ceil(ms / 3600000) * 3600000);
-    return Math.ceil(ms / 3600000) * 3600000;
+    return Math.ceil(ms / 7200000) * 7200000;
+    //return nearest_hour;    
+}
+function prevHourMilli(ms) {
+    //let nearest_hour = new Date(Math.ceil(ms / 3600000) * 3600000);
+    return Math.floor(ms / 7200000) * 7200000;
     //return nearest_hour;    
 }
 
 function timeCorrector(ms) {
-    return localToUtc(dayStartMilli(ms) + 86400000);
+    return localToUtc(twoHoursStartMilli(ms) + 7200000);
 }
 
 //Adds empty block at beginning of list_of_blocks if call doesn't start from beginning of day
 function blockCorrector(list_of_blocks) {
     if ((list_of_blocks[0].startedAt - timeCorrector(list_of_blocks[0].startedAt)) > 0) {
-        var emptyBlock = new OeeDataBase(null, timeCorrector(list_of_blocks[0].startedAt), list_of_blocks[0].startedAt, "No Data", null, null, null, null);
+        var emptyBlock = new OeeDataBase(null, timeCorrector(list_of_blocks[0].startedAt), list_of_blocks[0].startedAt, "No data", null, null, null, null);
         list_of_blocks.unshift(emptyBlock);
     }
     return list_of_blocks;
@@ -180,7 +190,7 @@ function blockCorrector(list_of_blocks) {
 // getOeeDataBaseByDate(1, '2022-07-22 00:00:00', '2022-07-22 04:00:00', callback);
 
 function check(block) {
-    if (Math.floor(block.startedAt / 3600000 ) < Math.floor(block.finishedAt / 3600000 )) {
+    if (Math.floor(block.startedAt / 7200000 ) < Math.floor(block.finishedAt / 7200000 )) {
         return true;
     }
     return false;
@@ -191,32 +201,52 @@ function check(block) {
 function splitBlock(block, splitPoint) {
     let temp = block.finishedAt;
     block.finishedAt = splitPoint;
-    var new_block = new OeeDataBase(block.isRunning, splitPoint, temp, block.downtimeTypeName, block.productId, block.productName, Math.floor(block.valid * ((temp - splitPoint)) / (temp - block.startedAt)), Math.floor(block.scrap * ((temp - splitPoint)) /  (temp - block.startedAt)));
+    var new_block = new OeeDataBase(block.isRunning, splitPoint+1, temp, block.downtimeTypeName, block.productId, block.productName, Math.floor(block.valid * ((temp - splitPoint)) / (temp - block.startedAt)), Math.floor(block.scrap * ((temp - splitPoint)) /  (temp - block.startedAt)));
     block.valid = block.valid - new_block.valid;
     block.scrap = block.scrap - new_block.scrap;
-    console.log(block.valid, block.scrap, new_block.valid, new_block.scrap);
     return new_block;
 }
 
+// function splitBlock(block, splitPoint) {
+//     if (!check(block)) {
+//         return block;
+//     } else {
+//         let temp = block.finishedAt;
+//         block.finishedAt = splitPoint;
+//         var new_block = new OeeDataBase(block.isRunning, splitPoint, temp, block.downtimeTypeName, block.productId, block.productName, Math.floor(block.valid * ((temp - splitPoint)) / (temp - block.startedAt)), Math.floor(block.scrap * ((temp - splitPoint)) /  (temp - block.startedAt)));
+//         block.valid = block.valid - new_block.valid;
+//         block.scrap = block.scrap - new_block.scrap;
+//         return splitBlock(new_block, nextHourMilli(new_block.startedAt));
+//     }
 
+// }
 
-const json = {"workstationId":1,"data":[{"id":130,"isRunning":true,"downtimeTypeId":null,"startedAt":"2022-07-22T00:00:00","finishedAt":"2022-07-22T00:39:07.377","productId":null,"valid":3,"scrap":1,"downtimeTypeName":"","productName":""},{"id":132,"isRunning":false,"downtimeTypeId":4,"startedAt":"2022-07-22T00:39:07.377","finishedAt":"2022-07-22T00:43:04.937","productId":null,"valid":0,"scrap":0,"downtimeTypeName":"Pause","productName":""},{"id":134,"isRunning":false,"downtimeTypeId":1,"startedAt":"2022-07-22T00:43:04.937","finishedAt":"2022-07-22T01:20:09.867","productId":null,"valid":0,"scrap":0,"downtimeTypeName":"Out of service","productName":""},{"id":133,"isRunning":true,"downtimeTypeId":null,"startedAt":"2022-07-22T01:20:09.867","finishedAt":"2022-07-22T01:39:11.753","productId":null,"valid":19,"scrap":0,"downtimeTypeName":"","productName":""},{"id":135,"isRunning":false,"downtimeTypeId":4,"startedAt":"2022-07-22T01:39:11.753","finishedAt":"2022-07-22T01:52:09.16","productId":null,"valid":0,"scrap":0,"downtimeTypeName":"Pause","productName":""},{"id":137,"isRunning":false,"downtimeTypeId":1,"startedAt":"2022-07-22T01:52:09.16","finishedAt":"2022-07-22T02:05:14.487","productId":null,"valid":0,"scrap":0,"downtimeTypeName":"Out of service","productName":""},{"id":136,"isRunning":true,"downtimeTypeId":null,"startedAt":"2022-07-22T02:05:14.487","finishedAt":"2022-07-22T02:30:16.13","productId":null,"valid":25,"scrap":0,"downtimeTypeName":"","productName":""},{"id":138,"isRunning":false,"downtimeTypeId":8,"startedAt":"2022-07-22T02:30:16.13","finishedAt":"2022-07-22T02:43:15.423","productId":null,"valid":0,"scrap":0,"downtimeTypeName":"Engine failure","productName":""},{"id":140,"isRunning":false,"downtimeTypeId":1,"startedAt":"2022-07-22T02:43:15.423","finishedAt":"2022-07-22T03:00:00","productId":null,"valid":0,"scrap":0,"downtimeTypeName":"Out of service","productName":""}]}
+const json = {"workstationId":1,"data":[{"id":130,"isRunning":true,"downtimeTypeId":null,"startedAt":"2022-07-22T00:25:00","finishedAt":"2022-07-22T03:15:00","productId":null,"valid":9,"scrap":4,"downtimeTypeName":"","productName":""},
+{"id":131,"isRunning":false,"downtimeTypeId":"2","startedAt":"2022-07-22T03:15:00","finishedAt":"2022-07-22T09:45:00","productId":null,"valid":2,"scrap":1,"downtimeTypeName":"Micro stop","productName":""}]}
+
+// function checkLength(list_of_blocks) {
+//     for(let i = 0; i < list_of_blocks.length; i++) {
+//         if (list_of_blocks[i].getBlockLength() >= 7200000) return false;
+//     }
+//     return true;
+// }
 
 function fixJson(json) {
     var array_of_jsons = JSON.parse(JSON.stringify(json));
     var list_of_blocks = decomposeTolistOfblocks(array_of_jsons);
-    list_of_blocks = blockCorrector(list_of_blocks);
-    for (let i = 0; i < list_of_blocks.length; i++) {
+    for (let i = 0; i  < list_of_blocks.length; i++) {
+        console.log(list_of_blocks[i].getBlockLength());
         if (check(list_of_blocks[i])) {
             let x = splitBlock(list_of_blocks[i], nextHourMilli(list_of_blocks[i].startedAt));
             list_of_blocks.splice(i + 1, 0, x);
         }
+        if (i > 10) break;
     }
+    list_of_blocks = blockCorrector(list_of_blocks);
     return list_of_blocks;
 }
 
 var list_of_blocks = fixJson(json);
-//console.log(list_of_blocks);
 
 var rt = document.querySelector(':root');
 // Create a function for getting a variable value
@@ -247,18 +277,16 @@ function drawBarDay(list_of_blocks) {
         } else {
             /*if (list_of_blocks[i].downtimeTypeName === "Unknown") {
                 color_set(i, 'red');
-            } else */if (list_of_blocks[i].downtimeTypeName === "Out of service") {
+            } else */if (list_of_blocks[i].downtimeTypeName === "No data") {
                 color_set(i, 'DimGray');
-            } else if (list_of_blocks[i].downtimeTypeName === "Micro Stop") {
+            } else if (list_of_blocks[i].downtimeTypeName === "Micro stop") {
                 color_set(i, 'Yellow');
-            } else if (list_of_blocks[i].downtimeTypeName === "No Data") {
-                color_set(i, 'White');
             } else {
                 color_set(i, 'Red');
             }
         }
     
-        var width = (utcToLocal(list_of_blocks[i].finishedAt) - utcToLocal(list_of_blocks[i].startedAt)) / 7200000;
+        var width = list_of_blocks[i].getBlockLength() / 7200000;
         let w = "calc(" + width.toString() + "*(60vw - 17px))"; 
         width_set(i, w);
     }
@@ -335,7 +363,7 @@ function scrollDown() {
 }
 
 
-//reload page every 1s
+//reload page
 // setTimeout(function(){
 //     window.location.reload(1);
 // }, 1000);

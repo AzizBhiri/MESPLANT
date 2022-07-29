@@ -56,19 +56,23 @@ function doAll(json) {
         return (ms - (ms % 86400000));
     }
 
+    function twoHourStartMilli(ms) {
+        return (ms - (ms % 7200000));
+    }
+
     function nextHourMilli(ms) {
         //let nearest_hour = new Date(Math.ceil(ms / 3600000) * 3600000);
-        return Math.ceil(ms / 3600000) * 3600000;
+        return Math.ceil(ms / 7200000) * 7200000;
         //return nearest_hour;    
     }
 
     function timeCorrector(ms) {
-        return localToUtc(dayStartMilli(ms) + 86400000);
+        return localToUtc(twoHourStartMilli(ms) + 7200000);
     }
 
 
     function check(block) {
-        if (Math.floor(block.startedAt / 3600000) < Math.floor(block.finishedAt / 3600000)) {
+        if (Math.floor(block.startedAt / 7200000) < Math.floor(block.finishedAt / 7200000)) {
             return true;
         }
         return false;
@@ -79,7 +83,7 @@ function doAll(json) {
     function splitBlock(block, splitPoint) {
         let temp = block.finishedAt;
         block.finishedAt = splitPoint;
-        var new_block = new OeeDataBase(block.isRunning, splitPoint, temp, block.downtimeTypeName, block.productId, block.productName, Math.floor(block.valid * ((temp - splitPoint)) / (temp - block.startedAt)), Math.floor(block.scrap * ((temp - splitPoint)) / (temp - block.startedAt)));
+        var new_block = new OeeDataBase(block.isRunning, splitPoint + 1, temp, block.downtimeTypeName, block.productId, block.productName, Math.floor(block.valid * ((temp - splitPoint)) / (temp - block.startedAt)), Math.floor(block.scrap * ((temp - splitPoint)) / (temp - block.startedAt)));
         block.valid = block.valid - new_block.valid;
         block.scrap = block.scrap - new_block.scrap;
         return new_block;
@@ -96,13 +100,13 @@ function doAll(json) {
     function fixJson(json) {
         var array_of_jsons = JSON.parse(JSON.stringify(json));
         var list_of_blocks = decomposeTolistOfblocks(array_of_jsons);
-        list_of_blocks = blockCorrector(list_of_blocks);
         for (let i = 0; i < list_of_blocks.length; i++) {
             if (check(list_of_blocks[i])) {
                 let x = splitBlock(list_of_blocks[i], nextHourMilli(list_of_blocks[i].startedAt));
                 list_of_blocks.splice(i + 1, 0, x);
             }
         }
+        list_of_blocks = blockCorrector(list_of_blocks);
         return list_of_blocks;
     }
 
@@ -316,10 +320,11 @@ function utcToLocal(time) {
 const currentDayStart = millisecondsToDate(utcToLocal(dayStartMilli(Date.now())));
 
 // create oee request
-var startDate = '2022-07-28 08:00:00';
+var startDate = '2022-07-29 00:00:00';
 var endDate = '';
+var workStation = document.getElementById('wrk').value;
 const oeeReq = createRequest(
-    createOeeUrl(1, startDate, endDate),
+    createOeeUrl(workStation = 1, startDate, endDate),
     'GET'
 );
 
@@ -361,7 +366,7 @@ oeeData();
 //reload page every 1s
 setTimeout(function(){
     window.location.reload(1);
-}, 5000);
+}, 15000);
 
 
 //getOeeDataBaseByDate(1, '2022-07-27 11:00:00', '2022-07-27 12:00:00', callback);
