@@ -224,12 +224,25 @@ body {
     color: white;
 }
 
+.wrk {
+    font-size: 30px;
+    font-family:'Georgia';
+    position: absolute;
+    top: 5%;
+    left: 42vw;
+}
+
+#wrk {
+    font-size: 30px;
+    font-family:'Georgia';
+}
+
 .oeeCalc {
     font-family:'Georgia';
     font-size: larger;
     position: absolute;
     top: 10%;
-    left: 38vw;
+    left: 34vw;
 }
 @media screen and (max-width: 950px) {
     .oeeCalc {
@@ -238,5 +251,18 @@ body {
         position: absolute;
         top: 10%;
         left: 32vw;
+    }
+
+    .wrk {
+        font-size: 30px;
+        font-family:'Georgia';
+        position: absolute;
+        top: 5%;
+        left: 34vw;
+    }
+
+    #wrk {
+        font-size: 30px;
+        font-family:'Georgia';
     }
 }
