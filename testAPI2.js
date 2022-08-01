@@ -227,17 +227,46 @@ function doAll(json) {
 
     //OEE Calculation
     function oeeCalc(a, b, c) {
-        if (a === 0)  a = 1;
-        if (b === 0)  b = 1;
-        if (c === 0)  c = 1;
-        return a*b*c;
+        var oee;
+        if (a < 0.1) {
+            if (b < 0.1) {
+                if (c < 0.1) {
+                    oee = null;
+                } else {
+                    oee = c;
+                }
+            } else {
+                if (c < 0.1) {
+                    oee = b;
+                } else {
+                    oee = b * c;
+                }
+            }
+        } else {
+            if (b < 0.1) {
+                if (c < 0.1) {
+                    oee = a;
+                } else {
+                    oee = a * c;
+                }
+            } else {
+                if (c < 0.1) {
+                    oee = a * b;
+                } else {
+                    oee = a * b * c;
+                }
+            }
+        }
+        return oee;
     }
 
+    const exactPrecision = (number, precision) => number.toPrecision(precision).replace(new RegExp("((\\d\\.*){"+precision+"}).*"), '$1');
+
     var oee = oeeCalc(json.oee.availability , json.oee.quality , json.oee.performance);
-    document.getElementById('oee').innerHTML = 'OEE = ' + oee.toPrecision(1).toString();
-    document.getElementById('ava').innerHTML = 'AVA = ' + json.oee.availability.toPrecision(1).toString();
-    document.getElementById('qua').innerHTML = 'QUA = ' + json.oee.quality.toPrecision(1).toString();
-    document.getElementById('per').innerHTML = 'PER = ' + json.oee.performance.toPrecision(1).toString();
+    document.getElementById('oee').innerHTML = 'OEE = ' + (exactPrecision(oee, 3) * 100).toString() + '% ';
+    document.getElementById('ava').innerHTML = 'AVA = ' + (exactPrecision(json.oee.availability, 3) * 100).toString() + '% ';
+    document.getElementById('qua').innerHTML = 'QUA = ' + (exactPrecision(json.oee.quality, 3) * 100).toString() + '% ';
+    document.getElementById('per').innerHTML = 'PER = ' + (exactPrecision(json.oee.performance, 3) * 100).toString() + '%';
 
 }
 
@@ -356,14 +385,27 @@ var startDate = currentDayStart;
 var endDate = '';
 
 //select workstation
-// var selection = document.getElementById('wrk').value;
+//var workStation = document.getElementById('wrk').value;
 // console.log(selection);
 // localStorage.setItem('workstation', selection);
 // var workStation = localStorage.getItem('workstation');
-// console.log(workStation);
+//console.log(workStation);
 
-const oeeReq = createRequest(
-    createOeeUrl(workStation = 1, startDate, endDate),
+document.addEventListener('DOMContentLoaded', function () {
+    var workStation = document.getElementById('wrk');
+    if (localStorage['wrk']) { // if job is set
+        workStation.value = localStorage['wrk']; // set the value
+    }
+    workStation.onchange = function () {
+         localStorage['wrk'] = this.value; // change localStorage on change
+     }
+ });
+
+var workStation = localStorage.getItem('wrk');
+//console.log(workStation);
+
+var oeeReq = createRequest(
+    createOeeUrl(workStation, startDate, endDate),
     'GET'
 );
 
