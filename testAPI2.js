@@ -68,7 +68,7 @@ function doAll(json) {
 
     function timeCorrector(ms) {
         //return localToUtc(twoHourStartMilli(ms) + 7200000);
-        return localToUtc(dayStartMilli(ms));
+        return localToUtc(dayStartMilli(ms) + 86399999);
     }
 
 
@@ -94,6 +94,11 @@ function doAll(json) {
         if ((list_of_blocks[0].startedAt - timeCorrector(list_of_blocks[0].startedAt)) > 0) {
             var emptyBlock = new OeeDataBase(null, timeCorrector(list_of_blocks[0].startedAt), list_of_blocks[0].startedAt, "No data", null, null, null, null);
             list_of_blocks.unshift(emptyBlock);
+        }
+        var off = new Date().getTimezoneOffset() * 60 * 1000;
+        if (list_of_blocks[list_of_blocks.length - 1].finishedAt < Date.now() + off) {
+            var emptyBlock = new OeeDataBase(null, list_of_blocks[list_of_blocks.length - 1].finishedAt, Date.now() + off, "No data", null, null, null, null);
+            list_of_blocks.push(emptyBlock);
         }
         return list_of_blocks;
     }
@@ -219,6 +224,19 @@ function doAll(json) {
         elt.style.backgroundColor = "var(--col" + i.toString() + ")";
         drawBarDay(list_of_blocks);
     }
+
+    //OEE Calculation
+    function oeeCalc(a, b, c) {
+        var oee;
+        if (a === 0)  a = 1;
+        if (b === 0)  b = 1;
+        if (c === 0)  c = 1;
+        oee = a*b*c;
+        return oee;
+    }
+
+    var oee = oeeCalc(json.oee.availability * json.oee.quality * json.oee.performance);
+    console.log(oee);
 }
 
 //Hide products
@@ -310,7 +328,7 @@ function createRequest(url, method) {
  * @returns 
  */
  function createOeeUrl(workStation, startDate, endDate) {
-    return `http://212.200.168.71/productionmanagement/api/oeedata?workstationId=${workStation}&&from=${startDate}&&to=${endDate}`;
+    return `http://212.200.168.71/productionmanagement/api/oeedata/oee?workstationId=${workStation}&&from=${startDate}&&to=${endDate}`;
 }
 
 //Time Correctors
@@ -327,12 +345,21 @@ function utcToLocal(time) {
     var offset_in_ms = new Date().getTimezoneOffset() * 1000 * 60; 
     return time + offset_in_ms;
 }
-const currentDayStart = millisecondsToDate(utcToLocal(dayStartMilli(Date.now())));
+var currentDayStart = millisecondsToDate(utcToLocal(dayStartMilli(Date.now())));
 
 // create oee request
-var startDate = '2022-07-29 00:00:00';
+// var startDate = '2022-07-29 00:30:00';
+var startDate = currentDayStart;
+//console.log(startDate);
 var endDate = '';
-var workStation = document.getElementById('wrk').value;
+
+//select workstation
+// var selection = document.getElementById('wrk').value;
+// console.log(selection);
+// localStorage.setItem('workstation', selection);
+// var workStation = localStorage.getItem('workstation');
+// console.log(workStation);
+
 const oeeReq = createRequest(
     createOeeUrl(workStation = 1, startDate, endDate),
     'GET'
@@ -376,7 +403,7 @@ oeeData();
 //reload page every 1s
 setTimeout(function(){
     window.location.reload(1);
-}, 15000);
+}, 5000);
 
 
 //getOeeDataBaseByDate(1, '2022-07-27 11:00:00', '2022-07-27 12:00:00', callback);
