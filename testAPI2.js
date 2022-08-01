@@ -227,16 +227,18 @@ function doAll(json) {
 
     //OEE Calculation
     function oeeCalc(a, b, c) {
-        var oee;
         if (a === 0)  a = 1;
         if (b === 0)  b = 1;
         if (c === 0)  c = 1;
-        oee = a*b*c;
-        return oee;
+        return a*b*c;
     }
 
-    var oee = oeeCalc(json.oee.availability * json.oee.quality * json.oee.performance);
-    console.log(oee);
+    var oee = oeeCalc(json.oee.availability , json.oee.quality , json.oee.performance);
+    document.getElementById('oee').innerHTML = 'OEE = ' + oee.toPrecision(1).toString();
+    document.getElementById('ava').innerHTML = 'AVA = ' + json.oee.availability.toPrecision(1).toString();
+    document.getElementById('qua').innerHTML = 'QUA = ' + json.oee.quality.toPrecision(1).toString();
+    document.getElementById('per').innerHTML = 'PER = ' + json.oee.performance.toPrecision(1).toString();
+
 }
 
 //Hide products

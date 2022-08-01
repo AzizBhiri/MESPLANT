@@ -216,10 +216,26 @@ body {
     position: absolute;
     top: 100px;
     right: 50px;
-    visibility: hidden;
+    /* visibility: hidden; */
 }
 
 #charts:hover {
     background-color: #23463f;
     color: white;
+}
+
+.oeeCalc {
+    font-family:'Georgia';
+    position: absolute;
+    top: 10%;
+    left: 38vw;
+}
+@media screen and (max-width: 950px) {
+    .oeeCalc {
+        font-family:'Georgia';
+        font-size: small;
+        position: absolute;
+        top: 10%;
+        left: 30vw;
+    }
 }
