@@ -260,13 +260,13 @@ function doAll(json) {
         return oee;
     }
 
-    const exactPrecision = (number, precision) => number.toPrecision(precision).replace(new RegExp("((\\d\\.*){"+precision+"}).*"), '$1');
+    var exactPrecision = (number, precision) => number.toPrecision(precision).replace(new RegExp("((\\d\\.*){"+precision+"}).*"), '$1');
 
     var oee = oeeCalc(json.oee.availability , json.oee.quality , json.oee.performance);
-    document.getElementById('oee').innerHTML = 'OEE = ' + (exactPrecision(oee, 3) * 100).toString() + '% ';
-    document.getElementById('ava').innerHTML = 'AVA = ' + (exactPrecision(json.oee.availability, 3) * 100).toString() + '% ';
-    document.getElementById('qua').innerHTML = 'QUA = ' + (exactPrecision(json.oee.quality, 3) * 100).toString() + '% ';
-    document.getElementById('per').innerHTML = 'PER = ' + (exactPrecision(json.oee.performance, 3) * 100).toString() + '%';
+    document.getElementById('oee').innerHTML = 'OEE = ' + exactPrecision((exactPrecision(oee, 4) * 100), 3).toString() + '% ';
+    document.getElementById('ava').innerHTML = 'AVA = ' + exactPrecision((exactPrecision(json.oee.availability, 4) * 100), 3).toString() + '% ';
+    document.getElementById('qua').innerHTML = 'QUA = ' + exactPrecision((exactPrecision(json.oee.quality, 4) * 100), 3).toString() + '% ';
+    document.getElementById('per').innerHTML = 'PER = ' + exactPrecision((exactPrecision(json.oee.performance, 4) * 100), 3).toString() + '%';
 
 }
 
