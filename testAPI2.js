@@ -376,12 +376,12 @@ function utcToLocal(time) {
     var offset_in_ms = new Date().getTimezoneOffset() * 1000 * 60; 
     return time + offset_in_ms;
 }
-var currentDayStart = millisecondsToDate(utcToLocal(dayStartMilli(Date.now())));
+var currentDayStart = millisecondsToDate(utcToLocal(dayStartMilli(Date.now())) + new Date().getTimezoneOffset() * 60 *1000);
 
 // create oee request
 // var startDate = '2022-07-29 00:30:00';
 var startDate = currentDayStart;
-//console.log(startDate);
+console.log(startDate);
 var endDate = '';
 
 //select workstation
