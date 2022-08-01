@@ -223,46 +223,6 @@ const ctx_state = document.getElementById('myChart_state');
 var doughnutChart_state = new Chart(ctx_state, config_state);
 
 
-// 2nd doughnut
-const data_product = {
-    labels: [
-      'Valid',
-      'Scrap',
-    ],
-    datasets: [{
-      label: 'Products',
-      data: [valid, scrap],
-      backgroundColor: [
-        '#add8e6',
-        'orange',
-      ],
-      hoverBorderWidth: 2,
-      hoverBorderColor: 'black'
-    }]
-};
-
-const config_product = {
-    type: 'doughnut',
-    data: data_product,
-    options: {
-        elements: {
-            center: {
-                text: valid + scrap,
-                color: '#000', // Default is #000000
-                fontStyle: 'Georgia', // Default is Arial
-                sidePadding: 20, // Default is 20 (as a percentage)
-                minFontSize: 15, // Default is 20 (in px), set to false and text will not wrap.
-                lineHeight: 15 // Default is 25 (in px), used for when text wraps
-            }
-        }
-        
-    }
-};
-
-const ctx_product = document.getElementById('myChart_product');
-var doughnutChart_product = new Chart(ctx_product, config_product);
-
-
 //Bar
 var product_names = [];
 for (let i = 0; i < list.length; i++) {
@@ -350,55 +310,11 @@ const config_bar = {
 const ctx_bar = document.getElementById('myBar_product');
 var barChart_product = new Chart(ctx_bar, config_bar);
 
-//downtime
+//Unknown
 function randomIntFromInterval(min, max) { // min and max included 
     return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
-var downtime_names = [];
-for (let i = 0; i < 10; i++) {
-    downtime_names.push(arr[randomIntFromInterval(0, 2)]);
-}
-
-var unique_downtime_names = [...new Set(downtime_names)];
-
-
-var downtime_periods = [];
-for (let i = 0; i < unique_downtime_names.length; i++) {
-    downtime_periods.push(0);
-}
-
-for (let i = 0; i < list.length; i++) {
-    downtime_periods[unique_downtime_names.indexOf(list[i].DowntimeTypeName)] += list[i].getBlockLength(); 
-}
-
-var colors3 = []; 
-for (let i = 0; i < unique_downtime_names.length; i++) {
-    var random_color = "#" + Math.floor(Math.random()*16777215).toString(16).padStart(6, '0').toUpperCase();
-    colors3.push(random_color);
-}
-
-const data_downtime = {
-    labels: unique_downtime_names,
-      datasets: [{
-        label: 'Downtime Name',
-        data: downtime_periods,
-        backgroundColor: colors3,
-        borderSkipped: 20,
-        hoverBorderWidth: 2,
-        hoverBorderColor: 'black'
-      }]
-};
-
-const config_downtime = {
-    type: 'bar',
-    data: data_downtime
-}
-
-const ctx_downtime = document.getElementById('myBar_downtime');
-var barChart_downtime = new Chart(ctx_downtime, config_downtime);
-
-//Unknown
 var unknown = ['P1', 'P2', 'P3', 'P4', 'P5', 'P6', 'P7', 'P8', 'P9', 'P10'];
 var unknown_periods = []
 for (let i = 0; i < unknown.length; i++) {

@@ -13,10 +13,10 @@
     <form>
         <label for="Time"><b>Choose a Time Period : </b></label>
         <select name="Time Period" id="Time Period">
-          <option value="Last 8 Hours">Last 8 Hours</option>
-          <option value="Last Day">Last Day</option>
-          <option value="Last Week">Last Week</option>
-          <option value="Last Month">Last Month</option>
+          <option value="28800000">Last 8 Hours</option>
+          <option value="86400000">Last Day</option>
+          <option value="604800000">Last Week</option>
+          <option value="2592000000 ">Last Month</option>
         </select>
         <br><br>
         <br><br>    
@@ -36,12 +36,18 @@
                 <div class="overSelect"></div>
             </div>
             <div id="checkboxes">
-              <label for="one">
-                <input type="checkbox" id="one" />All</label>
+              <!-- <label for="one">
+                <input type="checkbox" id="one" />All</label> -->
               <label for="two">
-                <input type="checkbox" id="two" />Machine 1</label>
+                <input type="checkbox" id="two" />Workstation 1</label>
               <label for="three">
-                <input type="checkbox" id="three" />Machine 2</label>
+                <input type="checkbox" id="three" />Workstation 2</label>
+              <label for="four">
+                <input type="checkbox" id="four" />Workstation 3</label>
+              <label for="five">
+                <input type="checkbox" id="five" />Workstation 4</label>
+              <label for="six">
+                <input type="checkbox" id="six" />Workstation 5</label>
             </div>
         </div>
         <br><br>
@@ -57,22 +63,23 @@
         <br><br>
         <br><br>
         <a href="./doughnut.html">
-          <input type="button" name="report" id="report" value="Create Report" onclick="getOptions()">
+          <input type="button" name="report" id="report" value="Create Report" onclick="saveToLocalStorage()">
         </a>    
         <br><br>
         <a href="./homePage.html">
             <input type="button" name="logout" id="logout" value="Log Out">
-        </a>    
-        <input type="button" name="back" id="back" value="Back">
-
+        </a>
+        <a href="./dailyView.html">    
+            <input type="button" name="back" id="back" value="Back">
+        </a>
         <input type="button" class="side" name="daily-view" id="daily-view" value="Daily View">
         <input type="button" class="side" name="reports" id="reports" value="Reports">
         <input type="button" class="side"  name="services" id="services" value="Services">
     </form>     
 </div>
-<div class="chartContainer">
+<!-- <div class="chartContainer">
   <canvas id="myChart" width="400" height="400"></canvas>
-</div>
+</div> -->
 <script>
     var expanded = false;
     function showCheckboxes() {
@@ -85,7 +92,16 @@
             expanded = false;
         }
     }
+
+    function saveToLocalStorage() {
+      localStorage.setItem('timePeriod', document.getElementById('Time Period').value);
+      localStorage.setItem('two', document.getElementById('two').checked);
+      localStorage.setItem('three', document.getElementById('three').checked);
+      localStorage.setItem('four', document.getElementById('four').checked);
+      localStorage.setItem('five', document.getElementById('five').checked);
+      localStorage.setItem('six', document.getElementById('six').checked);
+    }
 </script>
-<script src="reports.js"></script>
+<script src="doughnutAPI.js"></script>
 </body> 
 </html>

@@ -1,27 +1,27 @@
-body  
-{  
+body { 
     margin: 0;  
     padding: 0;  
     background-color:#6abadeba;  
     font-family: 'Arial';  
-}  
-.login{  
-        width: 382px;  
-        overflow: hidden;  
-        margin: auto;  
-        margin: 20 0 0 450px;  
-        padding: 80px;  
-        background: #23463f;  
-        border-radius: 15px ;  
-          
 } 
 
-img{  
-    padding: 20px;  
+.login{  
+    width: 382px;  
+    overflow: hidden;  
+    margin: auto;  
+    margin: 20 0 0 450px;  
+    padding: 40px;  
+    background: #23463f;  
+    border-radius: 15px ;        
+} 
+
+img {  
+    padding: 0px;  
     display: block;
     margin-left: auto;
     margin-right: auto;
-    width: 30%;  
+    width: 40vw;
+    transform: scale(0.5);  
 }
 
 label{  
@@ -48,7 +48,7 @@ label{
     height: 30px;  
     border: none;  
     border-radius: 17px;  
-    padding-left: 7px;  
+    padding-left: 0px;  
     color: #08ffd1;
     font-size: 20px;
     font-weight: bolder;  
@@ -112,7 +112,7 @@ label{
     font-size: 10px;
     font-weight: bolder;
     position: absolute;
-    top: 250px;
+    top: 210px;
     left: 20px;
 }
 
@@ -127,7 +127,7 @@ label{
     font-size: 10px;
     font-weight: bolder;
     position: absolute;
-    top: 380px;
+    top: 340px;
     left: 20px;
 }
 
@@ -142,7 +142,7 @@ label{
     font-size: 10px;
     font-weight: bolder;
     position: absolute;
-    top: 510px;
+    top: 470px;
     left: 20px;
 }
 
@@ -156,10 +156,6 @@ span{
     color: white;  
     font-size: 17px;  
 }  
-a{  
-    float: right;  
-    background-color: grey;  
-} 
 
 /*The Select Checkbox*/
 .multiselect {
