@@ -102,6 +102,11 @@ label{
 .side {
     visibility: visible;
 }
+
+#daily-view:hover {
+    background-color: #23463f;
+    color: white;
+}
 #daily-view{  
     width: 60px;  
     height: 30px;  
