@@ -224,27 +224,54 @@ body {
     color: white;
 }
 
-.wrk {
-    font-size: 30px;
-    font-family:'Georgia';
-    position: absolute;
-    top: 5%;
-    left: 42vw;
-}
+@media screen and (min-width: 900px) {
+    .wrk {
+        font-size: 30px;
+        font-family:'Georgia';
+        position: absolute;
+        top: 3%;
+        left: 42vw;
+    }
 
-#wrk {
-    font-size: 30px;
-    font-family:'Georgia';
-}
+    #wrk {
+        font-size: 30px;
+        font-family:'Georgia';
+    }
 
-.oeeCalc {
-    font-family:'Georgia';
-    font-size: larger;
-    position: absolute;
-    top: 10%;
-    left: 34vw;
+    .oeeCalc {
+        font-family:'Georgia';
+        font-size: large;
+        /* position: absolute;
+        top: 10%;
+        left: 34vw; */
+    }
+
+    #oee {
+        position: absolute;
+        top: 7%;
+        left: 46.5vw;
+    }
+
+    #ava {
+        position: absolute;
+        top: 13%;
+        left: 40vw;
+    }
+
+    #qua {
+        position: absolute;
+        top: 13%;
+        left: 48vw;
+    }
+
+    #per {
+        position: absolute;
+        top: 13%;
+        left: 56vw;
+    }
+
 }
-@media screen and (max-width: 950px) {
+@media screen and (max-width: 900px) {
     .oeeCalc {
         font-family:'Georgia';
         font-size: small;
@@ -257,7 +284,7 @@ body {
         font-size: 30px;
         font-family:'Georgia';
         position: absolute;
-        top: 5%;
+        top: 3%;
         left: 34vw;
     }
 
@@ -265,4 +292,13 @@ body {
         font-size: 30px;
         font-family:'Georgia';
     }
+
+    .oeeCalc {
+        font-family:'Georgia';
+        font-size: small;
+        position: absolute;
+        top: 10%;
+        left: 31vw;
+    }
+    
 }
