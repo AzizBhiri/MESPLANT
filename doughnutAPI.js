@@ -314,7 +314,7 @@ function doAll(json) {
         
         };
         
-        const ctx_state = document.getElementById('myChart_state');
+        const ctx_state = document.getElementById('myChart');
         var doughnutChart_state = new Chart(ctx_state, config_state);
     }
 
@@ -401,7 +401,7 @@ function doAll(json) {
 
         }
 
-        const ctx_bar = document.getElementById('myBar_product');
+        const ctx_bar = document.getElementById('myChart');
         var barChart_product = new Chart(ctx_bar, config_bar);
     }
 
@@ -456,7 +456,7 @@ function doAll(json) {
             data: data_unknown
         };
         
-        const ctx_unknown = document.getElementById('myChart_unknown');
+        const ctx_unknown = document.getElementById('myChart');
         var doughnutChart_unknown = new Chart(ctx_unknown, config_unknown);        
     }
 

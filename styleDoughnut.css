@@ -2,14 +2,6 @@
     display: flex;
 } */
 
-#myChart_state {
-    transform: scale(0.8);
-}
-
-#myBar_product {
-    transform: scale(0.8);
-}
-
-#myChart_unknown {
-    transform: scale(0.8);
+#myChart {
+    transform: scale(0.9);
 }
