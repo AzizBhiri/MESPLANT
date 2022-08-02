@@ -129,7 +129,6 @@ function doAll(json) {
 
     var list_of_blocks = fixJson(json);
 
-    
     //OEE Calculation
     function oeeCalc(a, b, c) {
         var oee;
@@ -255,66 +254,220 @@ function doAll(json) {
     
     Chart.pluginService.register(plugin);
 
-    //Prepare data for myChart_state doughnut
-    var green = 0;
-    var red = 0;
-    var grey = 0;
-    var yellow = 0;
-    for (let i = 0; i < list_of_blocks.length; i++) {
-        if (list_of_blocks[i].isRunning) {
-            green += list_of_blocks[i].getBlockLength();
-        } else if (list_of_blocks[i].downtimeTypeName === "No data") {
-            grey += list_of_blocks[i].getBlockLength();
-        } else if (list_of_blocks[i].downtimeTypeName === "Micro stop") {
-            yellow += list_of_blocks[i].getBlockLength();
-        } else {
-            red += list_of_blocks[i].getBlockLength();
-        }
-    }
-    
-    //Create myChart_state doughnut
-    const data_state = {
-        labels: [
-          'Running',
-          'Unknown',
-          'Out Of service',
-          'Micro stop'
-        ],
-        datasets: [{
-          label: 'State',
-          data: [green, red, grey, yellow],
-          backgroundColor: [
-            'green',
-            'red',
-            'grey',
-            'yellow'
-          ],
-          hoverBorderWidth: 2,
-          hoverBorderColor: 'black'
-        }]
-    };
-    
-    const config_state = {
-        type: 'doughnut',
-        data: data_state,
-        options: {
-            elements: {
-                center: {
-                    text: exactPrecision((exactPrecision(oee, 4) * 100), 3).toString() + '% '
-                    ,
-                    color: '#000', // Default is #000000
-                    fontStyle: 'Georgia', // Default is Arial
-                    sidePadding: 20, // Default is 20 (as a percentage)
-                    minFontSize: 15, // Default is 20 (in px), set to false and text will not wrap.
-                    lineHeight: 15 // Default is 25 (in px), used for when text wraps
-                }
+    //myChart_state doughnut
+    function oeeReport() {
+        //Prepare data for myChart_state doughnut
+        var green = 0;
+        var red = 0;
+        var grey = 0;
+        var yellow = 0;
+        for (let i = 0; i < list_of_blocks.length; i++) {
+            if (list_of_blocks[i].isRunning) {
+                green += list_of_blocks[i].getBlockLength();
+            } else if (list_of_blocks[i].downtimeTypeName === "No data") {
+                grey += list_of_blocks[i].getBlockLength();
+            } else if (list_of_blocks[i].downtimeTypeName === "Micro stop") {
+                yellow += list_of_blocks[i].getBlockLength();
+            } else {
+                red += list_of_blocks[i].getBlockLength();
             }
         }
-    
-    };
-    
-    const ctx_state = document.getElementById('myChart_state');
-    var doughnutChart_state = new Chart(ctx_state, config_state);
+        
+        //Create myChart_state doughnut
+        const data_state = {
+            labels: [
+            'Running',
+            'Unknown',
+            'Out Of service',
+            'Micro stop'
+            ],
+            datasets: [{
+            label: 'State',
+            data: [green, red, grey, yellow],
+            backgroundColor: [
+                'green',
+                'red',
+                'grey',
+                'yellow'
+            ],
+            hoverBorderWidth: 2,
+            hoverBorderColor: 'black'
+            }]
+        };
+        
+        const config_state = {
+            type: 'doughnut',
+            data: data_state,
+            options: {
+                elements: {
+                    center: {
+                        text: exactPrecision((exactPrecision(oee, 4) * 100), 3).toString() + '% '
+                        ,
+                        color: '#000', // Default is #000000
+                        fontStyle: 'Georgia', // Default is Arial
+                        sidePadding: 20, // Default is 20 (as a percentage)
+                        minFontSize: 15, // Default is 20 (in px), set to false and text will not wrap.
+                        lineHeight: 15 // Default is 25 (in px), used for when text wraps
+                    }
+                }
+            }
+        
+        };
+        
+        const ctx_state = document.getElementById('myChart_state');
+        var doughnutChart_state = new Chart(ctx_state, config_state);
+    }
+
+    //myBar_product
+    function bar() {
+        var product_names = [];
+        for (let i = 0; i < list_of_blocks.length; i++) {
+            product_names.push(list_of_blocks[i].product_name);
+        }
+        var unique_product_names = [...new Set(product_names)];
+
+        var product_count = [];
+        for (let i = 0; i < unique_product_names.length; i++) {
+            product_count.push(0);
+        }
+
+        var product_count_valid = [];
+        for (let i = 0; i < unique_product_names.length; i++) {
+            product_count_valid.push(0);
+        }
+
+        var product_count_scrap = [];
+        for (let i = 0; i < unique_product_names.length; i++) {
+            product_count_scrap.push(0);
+        }
+
+        for(let i = 0; i < list_of_blocks.length; i++) {
+            product_count[unique_product_names.indexOf(list_of_blocks[i].product_name)] += list_of_blocks[i].valid + list_of_blocks[i].scrap;
+        }
+
+        for(let i = 0; i < list_of_blocks.length; i++) {
+            product_count_valid[unique_product_names.indexOf(list_of_blocks[i].product_name)] += list_of_blocks[i].valid;
+        }
+
+        for(let i = 0; i < list_of_blocks.length; i++) {
+            product_count_scrap[unique_product_names.indexOf(list_of_blocks[i].product_name)] += list_of_blocks[i].scrap;
+        }
+
+        var colors1 = []; 
+        for (let i = 0; i < unique_product_names.length; i++) {
+            colors1.push('green');
+        }
+
+        var colors2 = []; 
+        for (let i = 0; i < unique_product_names.length; i++) {
+            colors2.push('red');
+        }
+
+
+        const data_bar = {
+            labels: unique_product_names,
+            datasets: [{
+                label: 'Valid',
+                data: product_count_valid,
+                backgroundColor: colors1,
+                borderSkipped: 20,
+                hoverBorderWidth: 2,
+                hoverBorderColor: 'black'
+            },
+            {
+                label: 'Scrap',
+                data: product_count_scrap,
+                backgroundColor: colors2,
+                borderSkipped: 20,
+                hoverBorderWidth: 2,
+                hoverBorderColor: 'black'
+            }
+            ]
+        };
+
+        const config_bar = {
+            type: 'bar',
+            data: data_bar,
+            options: {
+                scales: {
+                    xAxes: [{
+                        stacked: true
+                    }],
+                    yAxes: [{
+                        stacked: true
+                    }]
+                }
+            }
+
+        }
+
+        const ctx_bar = document.getElementById('myBar_product');
+        var barChart_product = new Chart(ctx_bar, config_bar);
+    }
+
+    //DownTime
+    function downtime() {
+        function randomIntFromInterval(min, max) { // min and max included 
+            return Math.floor(Math.random() * (max - min + 1) + min);
+        }
+        //get red stop names
+        var unknown = [];
+        for (let i = 0; i < list_of_blocks.length; i++) {
+            var x = list_of_blocks[i].downtimeTypeName;
+            if (x != "" && x != "Micro stop" && x != "No data") {
+                unknown.push(x);
+            }    
+        }
+
+        var unique_unknown = [...new Set(unknown)];
+
+        var unknown_periods = []
+        for (let i = 0; i < unique_unknown.length + 1; i++) {
+            unknown_periods.push(0);
+        }
+        
+        for (let i = 0; i < list_of_blocks.length; i++) {
+            var x = list_of_blocks[i].downtimeTypeName;
+            unknown_periods[unique_unknown.indexOf(x)] += list_of_blocks[i].getBlockLength();
+        }
+        
+        unknown_periods.pop();
+
+        var colors4 = []; 
+        for (let i = 0; i < unique_unknown.length; i++) {
+            var random_color = "#" + Math.floor(Math.random()*16777215).toString(16).padStart(6, '0').toUpperCase();
+            colors4.push(random_color);
+        }
+        
+        
+        const data_unknown = {
+            labels: unique_unknown,
+            datasets: [{
+              label: 'Unknown',
+              data: unknown_periods,
+              backgroundColor: colors4,
+              hoverBorderWidth: 2,
+              hoverBorderColor: 'black'
+            }]
+        };
+        
+        const config_unknown = {
+            type: 'doughnut',
+            data: data_unknown
+        };
+        
+        const ctx_unknown = document.getElementById('myChart_unknown');
+        var doughnutChart_unknown = new Chart(ctx_unknown, config_unknown);        
+    }
+
+    if (localStorage.getItem('type') === 'OEE') {
+        oeeReport();
+    } else if (localStorage.getItem('type') === 'Products') {
+        bar();
+    } else if (localStorage.getItem('type') === 'DownTime') {
+        downtime();
+    } 
+
 }
 
 

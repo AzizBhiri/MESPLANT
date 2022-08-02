@@ -55,8 +55,8 @@
         <label for="Report"><b>Choose a Report Type : </b></label>
         <select name="Report" id="Report">
           <option value="OEE">OEE</option>
-          <option value="DownTime">DownTime</option>
           <option value="Products">Products</option>
+          <option value="DownTime">DownTime</option>
           <option value="IoT">IoT</option>
           <option value="Service">Service</option>
         </select>       
@@ -100,6 +100,8 @@
       localStorage.setItem('four', document.getElementById('four').checked);
       localStorage.setItem('five', document.getElementById('five').checked);
       localStorage.setItem('six', document.getElementById('six').checked);
+      localStorage.setItem('type', document.getElementById('Report').value);
+
     }
 </script>
 <script src="doughnutAPI.js"></script>
