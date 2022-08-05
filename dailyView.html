@@ -5,49 +5,56 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/charts.css/dist/charts.min.css">
+    <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/charts.css/dist/charts.min.css"> -->
 </head>
 <body>
-    <a href="./index.html">
-        <input type="button" name="home" id="home" value="Home">
-    </a>
-    <a href="./reportsPage.html">
+    <!-- <a href="./reportsPage.html">
         <input type="button" name="charts" id="charts" value="Charts">
-    </a>
-    <div class="wrk">
-        <label for="workstations">Choose Workstation</label>
-        <select id="wrk" name="workstations">
-            <option value="1" selected>1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
-        </select>
-    </div>  
-    <div class="oeeCalc">
-        <h2 id="oee"></h2>
-        <p id="ava"></p>
-        <p id="qua"></p>
-        <p id="per"></p>
+    </a> -->
+    <div class="grid-container">
+        <div class="fiction"></div>
+        <div class="home">
+            <a href="./index.html">
+                <input type="button" name="home" id="home" value="Home">
+            </a>
+        </div>
+        <div class="wrk">
+            <label for="workstations">Choose Workstation</label>
+            <select id="wrk" name="workstations">
+                <option value="1" selected>1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+            </select>
+        </div>
+        <div class="oee">
+            <h2 id="oee"></h2>
+        </div>
+        <div class="oeeDetails">
+            <p id="ava"></p>
+            <p id="qua"></p>
+            <p id="per"></p>
+        </div> 
     </div>
-    <!-- <div class="dateBtn">
-        <button class="btn" onclick="previous()">Previous</button>
-        <button class="btn" onclick="next()">Next</button>
-    </div> -->
     <div class="timeAxis"></div>
     <div class="leftSide"></div>
     <div class="oneH">0H</div>
     <div class="middleSide"></div>
     <div class="twoH">1H</div>
     <div class="rightSide"></div>
-    <!-- <div class="limit"></div> -->
     <div class="threeH">2H</div>
     <div class="barsContainer" id="barsContainer">
         <div id="bars"></div>
-        <button class="btn" onclick="hide()">Hide</button>
-        <button class="btn" onclick="show()">Show</button>
-    </div>
-    <!-- <script src="drawBarNewData.js"></script> -->
+        <!-- <button class="btn" onclick="hide()">Hide</button>
+        <button class="btn" onclick="show()">Show</button> -->
+        <br><br><br><br><br><br><br><br><br>
+    </div>   
+      <input type="button" class="side" name="daily-view" id="daily-view" value="Daily View">
+      <a href="./reportsPage.html">
+        <input type="button" class="side" name="reports" id="reports" value="Reports">
+      </a>
+      <input type="button" class="side"  name="services" id="services" value="Services">
     <script src="testAPI2.js"></script>
 </body>
 </html>

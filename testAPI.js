@@ -242,11 +242,24 @@ const json = {"workstationId":1,"data":[{"id":130,"isRunning":true,"downtimeType
 //     return true;
 // }
 
+function removePrecision(a) {
+    return parseInt(Math.floor(a/1000).toString() + "000");
+}
+
+function removeMillis(list_of_blocks) {
+    for (let i = 0; i < list_of_blocks.length; i++) {
+        list_of_blocks[i].startedAt = removePrecision(list_of_blocks[i].startedAt);
+        list_of_blocks[i].finishedAt = removePrecision(list_of_blocks[i].finishedAt);
+    }
+    return list_of_blocks;
+}
+
 function fixJson(json) {
     var array_of_jsons = JSON.parse(JSON.stringify(json));
     var list_of_blocks = decomposeTolistOfblocks(array_of_jsons);
     list_of_blocks = blockCorrector(list_of_blocks);
     list_of_blocks = gapCorrector(list_of_blocks);
+    list_of_blocks = removeMillis(list_of_blocks);
     console.log(list_of_blocks);
     for (let i = 0; i  < list_of_blocks.length; i++) {
         if (check(list_of_blocks[i])) {

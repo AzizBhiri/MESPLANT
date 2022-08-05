@@ -164,7 +164,9 @@ function doAll(json) {
         return oee;
     }
 
-    var exactPrecision = (number, precision) => number.toPrecision(precision).replace(new RegExp("((\\d\\.*){"+precision+"}).*"), '$1');
+    function  exactPrecision(number, precision = 3) {
+        return number.toPrecision(precision).replace(new RegExp("((\\d\\.*){"+precision+"}).*"), '$1');
+    }
     var oee = oeeCalc(json.oee.availability , json.oee.quality , json.oee.performance);
 
     //Charts.js plugin
@@ -261,7 +263,11 @@ function doAll(json) {
         var red = 0;
         var grey = 0;
         var yellow = 0;
+        var valid = 0;
+        var scrap = 0;
         for (let i = 0; i < list_of_blocks.length; i++) {
+            valid += list_of_blocks[i].valid;
+            scrap += list_of_blocks[i].scrap;
             if (list_of_blocks[i].isRunning) {
                 green += list_of_blocks[i].getBlockLength();
             } else if (list_of_blocks[i].downtimeTypeName === "No data") {
@@ -273,6 +279,11 @@ function doAll(json) {
             }
         }
         
+        green = exactPrecision(green/3600000);
+        red = exactPrecision(red/3600000);
+        grey = exactPrecision(grey/3600000);
+        yellow = exactPrecision(yellow/3600000);
+
         //Create myChart_state doughnut
         const data_state = {
             labels: [
@@ -295,23 +306,38 @@ function doAll(json) {
             }]
         };
         
+        function chooseFontSize() {
+            if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
+                return 20;
+               } else { 
+                    return 40;
+               }
+        }
+
+        function chooseLineHeight() {
+            if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
+                return 50;
+               } else { 
+                    return 70;
+               }
+        }
+
         const config_state = {
             type: 'doughnut',
             data: data_state,
             options: {
                 elements: {
                     center: {
-                        text: exactPrecision((exactPrecision(oee, 4) * 100), 3).toString() + '% '
+                        text: '    ' + exactPrecision((exactPrecision(oee, 4) * 100), 3).toString() + '%   V:' + valid.toString() + ' | S:' + scrap.toString() 
                         ,
                         color: '#000', // Default is #000000
-                        fontStyle: 'Georgia', // Default is Arial
+                        fontStyle: 'Trebuchet MS', // Default is Arial
                         sidePadding: 20, // Default is 20 (as a percentage)
-                        minFontSize: 15, // Default is 20 (in px), set to false and text will not wrap.
-                        lineHeight: 15 // Default is 25 (in px), used for when text wraps
+                        minFontSize: chooseFontSize(), // Default is 20 (in px), set to false and text will not wrap.
+                        lineHeight: chooseLineHeight() // Default is 25 (in px), used for when text wraps
                     }
                 }
             }
-        
         };
         
         const ctx_state = document.getElementById('myChart');
@@ -432,14 +458,16 @@ function doAll(json) {
         }
         
         unknown_periods.pop();
+        for (let i = 0; i < unknown_periods.length; i++) {
+            unknown_periods[i] = exactPrecision(unknown_periods[i]/3600000);
+        }
 
         var colors4 = []; 
         for (let i = 0; i < unique_unknown.length; i++) {
             var random_color = "#" + Math.floor(Math.random()*16777215).toString(16).padStart(6, '0').toUpperCase();
             colors4.push(random_color);
         }
-        
-        
+
         const data_unknown = {
             labels: unique_unknown,
             datasets: [{

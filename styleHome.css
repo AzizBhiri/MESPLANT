@@ -22,24 +22,36 @@ img {
     margin-left: auto;
     margin-right: auto;
     width: 40vw;
-    transform: scale(0.5);  
+    transform: scale(0.7);  
 }
 
 #log{  
-    width: 100px;  
-    height: 30px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 10vh;
+    width: 40vw;    
+    height: 60px;
     border: none;  
     border-radius: 17px;  
-    color: #08ffd1;
-    font-size: 20px; 
+    color: #23463f;
+    font-size: 40px; 
     font-weight: bolder;
     position:relative;
-    top:50%; 
-    left: 40%;
+    background-color: white;
 
 }
 
 #log:hover {
-    background-color: #08ffd1;
+    background-color: #23463f;
     color: white;
+}
+
+a {
+    color: white;
+}
+
+a:hover {
+    color: #23463f;
+    width: 40vw;    
 }

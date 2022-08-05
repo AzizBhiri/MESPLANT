@@ -68,7 +68,7 @@ function doAll(json) {
 
     function timeCorrector(ms) {
         //return localToUtc(twoHourStartMilli(ms) + 7200000);
-        return localToUtc(dayStartMilli(ms) + 86399999);
+        return localToUtc(dayStartMilli(ms) + new Date().getTimezoneOffset() * 1000 * 60);
     }
 
 
@@ -113,17 +113,34 @@ function doAll(json) {
         return list_of_blocks;
     }
     
+
+    //set millisecond precision to 000
+    function removePrecision(a) {
+        return parseInt(Math.floor(a/1000).toString() + "000");
+    }
+
+    function removeMillis(list_of_blocks) {
+        for (let i = 0; i < list_of_blocks.length; i++) {
+            list_of_blocks[i].startedAt = removePrecision(list_of_blocks[i].startedAt);
+            list_of_blocks[i].finishedAt = removePrecision(list_of_blocks[i].finishedAt);
+        }
+        return list_of_blocks;
+    }
+
     function fixJson(json) {
         var array_of_jsons = JSON.parse(JSON.stringify(json));
         var list_of_blocks = decomposeTolistOfblocks(array_of_jsons);
         list_of_blocks = blockCorrector(list_of_blocks);
-        list_of_blocks = gapCorrector(list_of_blocks);  
+        list_of_blocks = gapCorrector(list_of_blocks);
+        //list_of_blocks = removeMillis(list_of_blocks); 
+        //console.log(list_of_blocks); 
         for (let i = 0; i < list_of_blocks.length; i++) {
             if (check(list_of_blocks[i])) {
                 let x = splitBlock(list_of_blocks[i], nextHourMilli(list_of_blocks[i].startedAt));
                 list_of_blocks.splice(i + 1, 0, x);
             }
         }
+        //console.log(list_of_blocks); 
         return list_of_blocks;
     }
 
@@ -150,7 +167,7 @@ function doAll(json) {
         rt.style.setProperty('--wid' + i.toString(), x);
     }
 
-    //Blocks width is dependent on time : 2H (7 200 000 ms) === 60vw - 40px
+    //Blocks width is dependent on time : 2H (7 200 000 ms) === 60vw - 17px
     function drawBarDay(list_of_blocks) {
         for (let i = 0; i < list_of_blocks.length; i++) {
             if (list_of_blocks[i].isRunning) {
@@ -168,13 +185,20 @@ function doAll(json) {
                 }
 
             var width = (utcToLocal(list_of_blocks[i].finishedAt) - utcToLocal(list_of_blocks[i].startedAt)) / 7200000;
-            let w = "calc(" + width.toString() + "*(60vw - 17px))";
+            var w;
+            if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
+                w = "calc(" + width.toString() + "*(57vw - 5px))";
+                document.getElementById('barsContainer').style.setProperty('--contWid', '56vw');
+               } else { 
+                    w = "calc(" + width.toString() + "*(60vw - 17px))";
+                    document.getElementById('barsContainer').style.setProperty('--contWid', '60vw');
+               }
             width_set(i, w);
         }
 
     }
 
-    //create divs in loop new OeeDataBAse format
+    //create divs in loop new OeeDataBase format
     var container = document.getElementById("bars");
     for (let i = 0; i < list_of_blocks.length; i++) {
         //var newBr = document.createElement('br');
@@ -337,8 +361,6 @@ function scrollDown() {
 
 ///new code for API
 
-
-
 /**
  * Methods for creating requests.
  * @param {*} url 
@@ -381,7 +403,7 @@ var currentDayStart = millisecondsToDate(utcToLocal(dayStartMilli(Date.now())) +
 // create oee request
 // var startDate = '2022-07-29 00:30:00';
 var startDate = currentDayStart;
-console.log(startDate);
+//console.log(startDate);
 var endDate = '';
 
 //select workstation
