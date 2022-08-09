@@ -68,7 +68,7 @@ function doAll(json) {
 
     function timeCorrector(ms) {
         //return localToUtc(twoHourStartMilli(ms) + 7200000);
-        return localToUtc(dayStartMilli(ms) + new Date().getTimezoneOffset() * 1000 * 60);
+        return localToUtc(dayStartMilli(ms) - new Date().getTimezoneOffset() * 1000 * 60);
     }
 
 
@@ -140,7 +140,7 @@ function doAll(json) {
                 list_of_blocks.splice(i + 1, 0, x);
             }
         }
-        //console.log(list_of_blocks); 
+        //console.log(list_of_blocks);
         return list_of_blocks;
     }
 
@@ -403,7 +403,7 @@ var currentDayStart = millisecondsToDate(utcToLocal(dayStartMilli(Date.now())) +
 // create oee request
 // var startDate = '2022-07-29 00:30:00';
 var startDate = currentDayStart;
-//console.log(startDate);
+console.log(startDate);
 var endDate = '';
 
 //select workstation

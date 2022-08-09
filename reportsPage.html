@@ -10,98 +10,101 @@
     <img src="elplant_300.png">
     <br>    
     <div class="login">    
-    <form>
-        <label for="Time"><b>Choose a Time Period : </b></label>
-        <select name="Time Period" id="Time Period">
-          <option value="28800000">Last 8 Hours</option>
-          <option value="86400000">Last Day</option>
-          <option value="604800000">Last Week</option>
-          <option value="2592000000 ">Last Month</option>
-        </select>
+      <form>
         <br><br>
-        <br><br>    
-        <!-- <label for="Workstation"><b>Choose a Workstation : </b></label>
-        <select name="Workstation" id="Workstation">
-          <option value="All">All</option>
-          <option value="Machine 1">Machine 1</option>
-          <option value="Machine 2">Machine 2</option>
-          <option value="Machine 3">Machine 3</option>
-        </select> -->
-        <div class="multiselect">
-            <div class="selectBox" onclick="showCheckboxes()">
-                <label for="Workstation"><b>Choose a Workstation : </b></label>
-                <select>
-                    <option>Select an option</option>
-                </select>
-                <div class="overSelect"></div>
-            </div>
-            <div id="checkboxes">
-              <!-- <label for="one">
-                <input type="checkbox" id="one" />All</label> -->
-              <label for="two">
-                <input type="checkbox" id="two" />Workstation 1</label>
-              <label for="three">
-                <input type="checkbox" id="three" />Workstation 2</label>
-              <label for="four">
-                <input type="checkbox" id="four" />Workstation 3</label>
-              <label for="five">
-                <input type="checkbox" id="five" />Workstation 4</label>
-              <label for="six">
-                <input type="checkbox" id="six" />Workstation 5</label>
-            </div>
-        </div>
-        <br><br>
-        <br><br>    
-        <label for="Report"><b>Choose a Report Type : </b></label>
-        <select name="Report" id="Report">
-          <option value="OEE">OEE</option>
-          <option value="Products">Products</option>
-          <option value="DownTime">DownTime</option>
-          <option value="IoT">IoT</option>
-          <option value="Service">Service</option>
-        </select>       
-        <br><br>
-        <br><br>
-        <a href="./doughnut.html">
-          <input type="button" name="report" id="report" value="Create Report" onclick="saveToLocalStorage()">
-        </a>    
-        <br><br>
-        <a href="./index.html">
-            <input type="button" name="logout" id="logout" value="Log Out">
-        </a>
-        <a href="./dailyView.html">    
-            <input type="button" name="back" id="back" value="Back">
-        </a>
-        <a href="./dailyView.html">    
-          <input type="button" class="side" name="daily-view" id="daily-view" value="Daily View">
-        </a>
-        <input type="button" class="side" name="reports" id="reports" value="Reports">
-        <input type="button" class="side"  name="services" id="services" value="Services">
-    </form>     
-</div>
+          <label for="Time Period"><b>Time Period : </b></label>
+          <select name="Time Period" id="Time-Period">
+            <option value="28800000">Last 8 Hours</option>
+            <option value="86400000">Last Day</option>
+            <option value="604800000">Last Week</option>
+            <option value="2592000000">Last Month</option>
+            <option value="1">Custom</option>
+          </select>
+          <br><br>
+            <label id="start" for="Time"><b>Start : </b></label>
+            <input disabled name="Time1" id="Time-Period1" type="datetime-local" step="60"></input>
+            <br>
+            <label id="end" for="Time2"><b>End : </b></label>
+            <input disabled name="Time2" id="Time-Period2" type="datetime-local" step="60"></input>
+          <br><br>
+          <br><br>
+          <label for="Workstation"><b>Workstation : </b></label>
+          <select id="Workstation">
+              <option value="1" selected>Workstation 1</option>
+              <option value="2">Workstation 2</option>
+              <option value="3">Workstation 3</option>
+              <option value="4">Workstation 4</option>
+              <option value="5">Workstation 5</option>
+          </select>
+          <br><br>
+          <br><br>    
+          <label for="Report"><b>Report Type : </b></label>
+          <select name="Report" id="Report">
+            <!-- <option value="OEE">OEE</option>
+            <option value="Products">Products</option>
+            <option value="DownTime">DownTime</option> -->
+            <option value="Production" selected>Production</option>
+            <option value="IoT">IoT</option>
+            <option value="Service">Service</option>
+          </select>       
+          <br><br>
+          <br><br>
+          <a href="./doughnut.html">
+            <input type="button" name="report" id="report" value="Create Report" onclick="saveToLocalStorage()">
+          </a> 
+          <a href="./index.html">
+            <input type="button" name="home" id="home" value="Home">
+          </a>
+          <a href="./dailyView.html">    
+            <input type="button" class="side" name="daily-view" id="daily-view" value="Daily View">
+          </a>
+          <input type="button" class="side" name="reports" id="reports" value="Reports">
+          <input type="button" class="side"  name="services" id="services" value="Services">
+      </form>     
+  </div>
 <!-- <div class="chartContainer">
   <canvas id="myChart" width="400" height="400"></canvas>
 </div> -->
 <script>
-    var expanded = false;
-    function showCheckboxes() {
-        var checkboxes = document.getElementById("checkboxes");
-        if (!expanded) {
-            checkboxes.style.display = "block";
-            expanded = true;
-        } else {
-            checkboxes.style.display = "none";
-            expanded = false;
-        }
+    // var expanded = false;
+    // function showCheckboxes() {
+    //     var checkboxes = document.getElementById("checkboxes");
+    //     if (!expanded) {
+    //         checkboxes.style.display = "block";
+    //         expanded = true;
+    //     } else {
+    //         checkboxes.style.display = "none";
+    //         expanded = false;
+    //     }
+    // }
+    function get_start_datetime()
+    {
+      var myField1 = document.getElementById("Time-Period1");
+      var now1 = new Date();
+      myField1.valueAsNumber = (now1.getTime() - now1.getTimezoneOffset() * 60000)  - ((now1.getTime() - now1.getTimezoneOffset() * 60000) % 86400000);
+    }
+    get_start_datetime();
+    function get_now_datetime()
+    {
+      var myField2 = document.getElementById("Time-Period2");
+      var now2 = new Date();
+      myField2.valueAsNumber = (now2.getTime() - now2.getTimezoneOffset() * 60000)  - ((now2.getTime() - now2.getTimezoneOffset() * 60000) % 60000);
+    }
+    get_now_datetime();
+    document.getElementById("Time-Period").onchange = function () {
+      document.getElementById("Time-Period1").setAttribute("disabled", "disabled");
+      document.getElementById("Time-Period2").setAttribute("disabled", "disabled");
+      if (this.value == 1) {
+        document.getElementById("Time-Period1").removeAttribute("disabled");
+        document.getElementById("Time-Period2").removeAttribute("disabled");
+      }
     }
 
     function saveToLocalStorage() {
-      localStorage.setItem('timePeriod', document.getElementById('Time Period').value);
-      localStorage.setItem('two', document.getElementById('two').checked);
-      localStorage.setItem('three', document.getElementById('three').checked);
-      localStorage.setItem('four', document.getElementById('four').checked);
-      localStorage.setItem('five', document.getElementById('five').checked);
-      localStorage.setItem('six', document.getElementById('six').checked);
+      localStorage.setItem('timePeriod', document.getElementById('Time-Period').value);
+      localStorage.setItem('timePeriod1', document.getElementById('Time-Period1').value);
+      localStorage.setItem('timePeriod2', document.getElementById('Time-Period2').value);
+      localStorage.setItem('wrk', document.getElementById('Workstation').value);
       localStorage.setItem('type', document.getElementById('Report').value);
     }
 </script>

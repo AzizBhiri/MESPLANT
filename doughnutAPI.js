@@ -1,4 +1,4 @@
-function doAll(json) {
+function doAll(json, sd) {
     
     function millisecondToDate(ms) {
         var date = new Date(ms).toLocaleString('sv');
@@ -68,7 +68,7 @@ function doAll(json) {
 
     function timeCorrector(ms) {
         //return localToUtc(twoHourStartMilli(ms) + 7200000);
-        return localToUtc(dayStartMilli(ms) + 86399999);
+        return localToUtc(dayStartMilli(ms) + new Date().getTimezoneOffset() * 1000 * 60);
     }
 
 
@@ -91,8 +91,8 @@ function doAll(json) {
     }
     //Adds empty block at beginning of list_of_blocks if call doesn't start from beginning of day
     function blockCorrector(list_of_blocks) {
-        if ((list_of_blocks[0].startedAt - timeCorrector(list_of_blocks[0].startedAt)) > 0) {
-            var emptyBlock = new OeeDataBase(null, timeCorrector(list_of_blocks[0].startedAt), list_of_blocks[0].startedAt, "No data", null, null, null, null);
+        if ((list_of_blocks[0].startedAt - sd) > 0) {
+            var emptyBlock = new OeeDataBase(null, sd, list_of_blocks[0].startedAt, "No data", null, null, null, null);
             list_of_blocks.unshift(emptyBlock);
         }
         var off = new Date().getTimezoneOffset() * 60 * 1000;
@@ -128,6 +128,7 @@ function doAll(json) {
     }
 
     var list_of_blocks = fixJson(json);
+    //console.log(list_of_blocks);
 
     //OEE Calculation
     function oeeCalc(a, b, c) {
@@ -261,6 +262,7 @@ function doAll(json) {
         //Prepare data for myChart_state doughnut
         var green = 0;
         var red = 0;
+        var burgundy = 0;
         var grey = 0;
         var yellow = 0;
         var valid = 0;
@@ -274,8 +276,10 @@ function doAll(json) {
                 grey += list_of_blocks[i].getBlockLength();
             } else if (list_of_blocks[i].downtimeTypeName === "Micro stop") {
                 yellow += list_of_blocks[i].getBlockLength();
-            } else {
+            } else if (list_of_blocks[i].downtimeTypeName === "Unknown"){
                 red += list_of_blocks[i].getBlockLength();
+            } else {
+                burgundy += list_of_blocks[i].getBlockLength();
             }
         }
         
@@ -289,20 +293,22 @@ function doAll(json) {
             labels: [
             'Running',
             'Unknown',
-            'Out Of service',
+            'Known stop',
+            'Out of service',
             'Micro stop'
             ],
             datasets: [{
             label: 'State',
-            data: [green, red, grey, yellow],
+            data: [green, red, burgundy, grey, yellow],
             backgroundColor: [
                 'green',
                 'red',
+                'maroon',
                 'grey',
                 'yellow'
             ],
             hoverBorderWidth: 2,
-            hoverBorderColor: 'black'
+            hoverBorderColor: 'black',
             }]
         };
         
@@ -310,7 +316,7 @@ function doAll(json) {
             if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
                 return 20;
                } else { 
-                    return 40;
+                    return 60 * (window.innerWidth / 960);
                }
         }
 
@@ -318,7 +324,7 @@ function doAll(json) {
             if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
                 return 50;
                } else { 
-                    return 70;
+                    return 70 * (window.innerWidth / 960);
                }
         }
 
@@ -328,7 +334,7 @@ function doAll(json) {
             options: {
                 elements: {
                     center: {
-                        text: '    ' + exactPrecision((exactPrecision(oee, 4) * 100), 3).toString() + '%   V:' + valid.toString() + ' | S:' + scrap.toString() 
+                        text: '    ' + exactPrecision((exactPrecision(oee, 4) * 100), 3).toString() + '%   V:' + valid.toString() + '   S:' + scrap.toString() 
                         ,
                         color: '#000', // Default is #000000
                         fontStyle: 'Trebuchet MS', // Default is Arial
@@ -340,7 +346,7 @@ function doAll(json) {
             }
         };
         
-        const ctx_state = document.getElementById('myChart');
+        const ctx_state = document.getElementById('myChart1');
         var doughnutChart_state = new Chart(ctx_state, config_state);
     }
 
@@ -352,10 +358,21 @@ function doAll(json) {
         }
         var unique_product_names = [...new Set(product_names)];
 
-        var product_count = [];
-        for (let i = 0; i < unique_product_names.length; i++) {
-            product_count.push(0);
+        //remove null, undefined, ""
+        function removeIndex(array, item) {
+            var index = array.indexOf(item);
+            if (index !== -1) {
+                array.splice(index, 1);
+            }
         }
+        removeIndex(unique_product_names, null);
+        removeIndex(unique_product_names, undefined);
+        removeIndex(unique_product_names, "");
+
+        // var product_count = [];
+        // for (let i = 0; i < unique_product_names.length; i++) {
+        //     product_count.push(0);
+        // }
 
         var product_count_valid = [];
         for (let i = 0; i < unique_product_names.length; i++) {
@@ -367,9 +384,9 @@ function doAll(json) {
             product_count_scrap.push(0);
         }
 
-        for(let i = 0; i < list_of_blocks.length; i++) {
-            product_count[unique_product_names.indexOf(list_of_blocks[i].product_name)] += list_of_blocks[i].valid + list_of_blocks[i].scrap;
-        }
+        // for(let i = 0; i < list_of_blocks.length; i++) {
+        //     product_count[unique_product_names.indexOf(list_of_blocks[i].product_name)] += list_of_blocks[i].valid + list_of_blocks[i].scrap;
+        // }
 
         for(let i = 0; i < list_of_blocks.length; i++) {
             product_count_valid[unique_product_names.indexOf(list_of_blocks[i].product_name)] += list_of_blocks[i].valid;
@@ -378,6 +395,9 @@ function doAll(json) {
         for(let i = 0; i < list_of_blocks.length; i++) {
             product_count_scrap[unique_product_names.indexOf(list_of_blocks[i].product_name)] += list_of_blocks[i].scrap;
         }
+        
+        // console.log(unique_product_names);
+        // console.log(product_count_valid);
 
         var colors1 = []; 
         for (let i = 0; i < unique_product_names.length; i++) {
@@ -427,7 +447,7 @@ function doAll(json) {
 
         }
 
-        const ctx_bar = document.getElementById('myChart');
+        const ctx_bar = document.getElementById('myChart2');
         var barChart_product = new Chart(ctx_bar, config_bar);
     }
 
@@ -484,16 +504,18 @@ function doAll(json) {
             data: data_unknown
         };
         
-        const ctx_unknown = document.getElementById('myChart');
+        const ctx_unknown = document.getElementById('myChart3');
         var doughnutChart_unknown = new Chart(ctx_unknown, config_unknown);        
     }
 
-    if (localStorage.getItem('type') === 'OEE') {
+    if (localStorage.getItem('type') === 'Production') {
         oeeReport();
-    } else if (localStorage.getItem('type') === 'Products') {
         bar();
-    } else if (localStorage.getItem('type') === 'DownTime') {
         downtime();
+    } else if (localStorage.getItem('type') === 'IoT') {
+        alert('Not available');
+    } else if (localStorage.getItem('type') === 'Service') {
+        alert('Not available');
     } 
 
 }
@@ -536,33 +558,49 @@ function utcToLocal(time) {
     var offset_in_ms = new Date().getTimezoneOffset() * 1000 * 60; 
     return time + offset_in_ms;
 }
-var currentDayStart = millisecondsToDate(utcToLocal(dayStartMilli(Date.now())) + new Date().getTimezoneOffset() * 60 *1000);
+var currentDayStart = millisecondsToDate(utcToLocal(dayStartMilli(Date.now())) - new Date().getTimezoneOffset() * 60 *1000);
+
+function dateToMilliseconds(date) {
+    var ms = new Date(date).getTime();
+    return ms;
+}
 
 // create oee request
-var timePeriod = localStorage.getItem('timePeriod');
-var startDate = millisecondsToDate(utcToLocal(Date.now()) + (new Date().getTimezoneOffset() * 60 *1000) - timePeriod);
+var startDate;
+var endDate;
+var timePeriod;
 
-var endDate = '';
-
-
-function getWorkstation() {
-    if (localStorage.getItem('two') === 'true') {
-        return 1;
-    } else if (localStorage.getItem('three') === 'true') {
-        return 2;
-    } else if (localStorage.getItem('four') === 'true') {
-        return 3;
-    } else if (localStorage.getItem('five') === 'true') {
-        return 4;
-    } else if (localStorage.getItem('six') === 'true') {
-        return 5;
-    } 
-
+timePeriod = localStorage.getItem('timePeriod');
+if (timePeriod != 1) {
+    startDate = millisecondsToDate(utcToLocal(Date.now()) - (new Date().getTimezoneOffset() * 60 *1000) - timePeriod);
+    //console.log(timePeriod, startDate);
+    endDate = '';
+} else {
+    startDate = millisecondsToDate(dateToMilliseconds(localStorage.getItem('timePeriod1')) - (new Date().getTimezoneOffset() * 60 *1000));
+    endDate = millisecondsToDate(dateToMilliseconds(localStorage.getItem('timePeriod2')) - (new Date().getTimezoneOffset() * 60 *1000));
 }
-var workStation = getWorkstation();
+// timePeriod = localStorage.getItem('timePeriod');
+// if (timePeriod != 1) {
+//     document.getElementById("Time-Period").onchange = function () {
+//         document.getElementById("Time-Period1").setAttribute("disabled", "disabled");
+//         document.getElementById("Time-Period2").setAttribute("disabled", "disabled");
+//         if (this.value == 1) {
+//             document.getElementById("Time-Period1").removeAttribute("disabled");
+//             document.getElementById("Time-Period2").removeAttribute("disabled");
+//             startDate = millisecondsToDate(dateToMilliseconds(localStorage.getItem('timePeriod1')) + (new Date().getTimezoneOffset() * 60 *1000));
+//             endDate = millisecondsToDate(dateToMilliseconds(localStorage.getItem('timePeriod2')) + (new Date().getTimezoneOffset() * 60 *1000));
+//             } else {
+//                 startDate = millisecondsToDate(utcToLocal(Date.now()) + (new Date().getTimezoneOffset() * 60 *1000) - timePeriod);
+//                 endDate = '';
+//             }
+//     }
+// }
+
+var workStation = localStorage.getItem('wrk');
+//console.log(workStation);
 
 var oeeReq = createRequest(
-    createOeeUrl(workStation, startDate, endDate = ''),
+    createOeeUrl(workStation, startDate, endDate),
     'GET'
 );
 
@@ -592,7 +630,7 @@ async function oeeData() {
     try {
         data = await getDataFromAPI();
         //after data is filled you process it
-        doAll(data);
+        doAll(data, dateToMilliseconds(startDate));
     } catch (error) {
         throw error;
     }
