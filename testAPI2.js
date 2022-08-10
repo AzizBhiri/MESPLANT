@@ -53,7 +53,13 @@ function doAll(json) {
     }
 
     function dayStartMilli(ms) {
-        return (ms - (ms % 86400000));
+        var x = 0;
+        var off = new Date().getTimezoneOffset() * 60000;
+        var res = ms - (ms % 86400000);
+        if (Math.floor(res/86400000) < Math.floor(Date.now()/86400000)) {
+            x = 86400000;
+        }
+        return res + x + off;
     }
 
     function twoHourStartMilli(ms) {
@@ -91,8 +97,11 @@ function doAll(json) {
     }
     //Adds empty block at beginning of list_of_blocks if call doesn't start from beginning of day
     function blockCorrector(list_of_blocks) {
-        if ((list_of_blocks[0].startedAt - timeCorrector(list_of_blocks[0].startedAt)) > 0) {
-            var emptyBlock = new OeeDataBase(null, timeCorrector(list_of_blocks[0].startedAt), list_of_blocks[0].startedAt, "No data", null, null, null, null);
+        if (list_of_blocks[0].startedAt - dayStartMilli(list_of_blocks[0].startedAt) > 0) {
+            console.log(millisecondToDate(list_of_blocks[0].startedAt));
+            console.log(millisecondToDate(dayStartMilli(list_of_blocks[0].startedAt) - new Date().getTimezoneOffset() * 60 * 1000));
+            // console.log((list_of_blocks[0].startedAt - dayStartMilli(list_of_blocks[0].startedAt)));
+            var emptyBlock = new OeeDataBase(null, dayStartMilli(list_of_blocks[0].startedAt), list_of_blocks[0].startedAt, "No data", null, null, null, null);
             list_of_blocks.unshift(emptyBlock);
         }
         var off = new Date().getTimezoneOffset() * 60 * 1000;
@@ -390,19 +399,30 @@ function millisecondsToDate(ms) {
     return date
 }
 const currentDate = millisecondsToDate(Date.now());
+console.log(currentDate);
 
 function dayStartMilli(ms) {
-    return (ms - (ms % 86400000));
+    var x = 0;
+    var off = new Date().getTimezoneOffset() * 60000;
+    var res = ms - (ms % 86400000);
+    if (Math.floor(res/86400000) < Math.floor(Date.now()/86400000)) {
+        x = 86400000;
+    }
+    return res + x + off;
 }
 function utcToLocal(time) {
     var offset_in_ms = new Date().getTimezoneOffset() * 1000 * 60; 
+    return time - offset_in_ms;
+}
+
+function localToUtc(time) {
+    var offset_in_ms = new Date().getTimezoneOffset() * 1000 * 60;
     return time + offset_in_ms;
 }
-var currentDayStart = millisecondsToDate(utcToLocal(dayStartMilli(Date.now())) + new Date().getTimezoneOffset() * 60 *1000);
+var startDate = millisecondsToDate(localToUtc(dayStartMilli(Date.now())));
 
 // create oee request
 // var startDate = '2022-07-29 00:30:00';
-var startDate = currentDayStart;
 console.log(startDate);
 var endDate = '';
 

@@ -1,4 +1,4 @@
-function doAll(json, sd) {
+function doAll(json, sd, fd) {
     
     function millisecondToDate(ms) {
         var date = new Date(ms).toLocaleString('sv');
@@ -53,7 +53,13 @@ function doAll(json, sd) {
     }
 
     function dayStartMilli(ms) {
-        return (ms - (ms % 86400000));
+        var x = 0;
+        var off = new Date().getTimezoneOffset() * 60000;
+        var res = ms - (ms % 86400000);
+        if (Math.floor(res/86400000) < Math.floor(Date.now()/86400000)) {
+            x = 86400000;
+        }
+        return res + x + off;
     }
 
     function twoHourStartMilli(ms) {
@@ -92,12 +98,12 @@ function doAll(json, sd) {
     //Adds empty block at beginning of list_of_blocks if call doesn't start from beginning of day
     function blockCorrector(list_of_blocks) {
         if ((list_of_blocks[0].startedAt - sd) > 0) {
-            var emptyBlock = new OeeDataBase(null, sd, list_of_blocks[0].startedAt, "No data", null, null, null, null);
+            var emptyBlock = new OeeDataBase(false, sd, list_of_blocks[0].startedAt, "No data", null, null, null, null);
             list_of_blocks.unshift(emptyBlock);
         }
         var off = new Date().getTimezoneOffset() * 60 * 1000;
-        if (list_of_blocks[list_of_blocks.length - 1].finishedAt < Date.now() + off) {
-            var emptyBlock = new OeeDataBase(null, list_of_blocks[list_of_blocks.length - 1].finishedAt, Date.now() + off, "No data", null, null, null, null);
+        if (list_of_blocks[list_of_blocks.length - 1].finishedAt < fd + off) {
+            var emptyBlock = new OeeDataBase(false, list_of_blocks[list_of_blocks.length - 1].finishedAt, fd + off, "No data", null, null, null, null);
             list_of_blocks.push(emptyBlock);
         }
         return list_of_blocks;
@@ -117,7 +123,7 @@ function doAll(json, sd) {
         var array_of_jsons = JSON.parse(JSON.stringify(json));
         var list_of_blocks = decomposeTolistOfblocks(array_of_jsons);
         list_of_blocks = blockCorrector(list_of_blocks);
-        list_of_blocks = gapCorrector(list_of_blocks);  
+        list_of_blocks = gapCorrector(list_of_blocks);
         for (let i = 0; i < list_of_blocks.length; i++) {
             if (check(list_of_blocks[i])) {
                 let x = splitBlock(list_of_blocks[i], nextHourMilli(list_of_blocks[i].startedAt));
@@ -128,7 +134,7 @@ function doAll(json, sd) {
     }
 
     var list_of_blocks = fixJson(json);
-    //console.log(list_of_blocks);
+    //console.log(list_of_blocks[2]);
 
     //OEE Calculation
     function oeeCalc(a, b, c) {
@@ -166,7 +172,8 @@ function doAll(json, sd) {
     }
 
     function  exactPrecision(number, precision = 3) {
-        return number.toPrecision(precision).replace(new RegExp("((\\d\\.*){"+precision+"}).*"), '$1');
+        // return number.toPrecision(precision).replace(new RegExp("((\\d\\.*){"+precision+"}).*"), '$1');
+        return number.toPrecision(precision);
     }
     var oee = oeeCalc(json.oee.availability , json.oee.quality , json.oee.performance);
 
@@ -285,8 +292,10 @@ function doAll(json, sd) {
         
         green = exactPrecision(green/3600000);
         red = exactPrecision(red/3600000);
+        burgundy = exactPrecision(burgundy/3600000);
         grey = exactPrecision(grey/3600000);
         yellow = exactPrecision(yellow/3600000);
+        console.log(grey);
 
         //Create myChart_state doughnut
         const data_state = {
@@ -518,6 +527,19 @@ function doAll(json, sd) {
         alert('Not available');
     } 
 
+    document.getElementById('wrk').innerHTML = 'Workation ' + localStorage.getItem('wrk');
+    if (localStorage.getItem('timePeriod') == 28800000) {
+        document.getElementById('period').innerHTML = 'Last 8 Hours';
+    } else if (localStorage.getItem('timePeriod') == 86400000) {
+        document.getElementById('period').innerHTML = 'Last Day';
+    } else if (localStorage.getItem('timePeriod') == 604800000) {
+        document.getElementById('period').innerHTML = 'Last Week';
+    } else if (localStorage.getItem('timePeriod') == 2592000000) {
+        document.getElementById('period').innerHTML = 'Last Month';
+    } else {
+        document.getElementById('period').innerHTML = 'From ' + localStorage.getItem('timePeriod1').replace(/T/g, ' ') + ' To ' + localStorage.getItem('timePeriod2').replace(/T/g, ' ');
+    }
+
 }
 
 
@@ -552,13 +574,24 @@ function millisecondsToDate(ms) {
 const currentDate = millisecondsToDate(Date.now());
 
 function dayStartMilli(ms) {
-    return (ms - (ms % 86400000));
+    var x = 0;
+    var off = new Date().getTimezoneOffset() * 60000;
+    var res = ms - (ms % 86400000);
+    if (Math.floor(res/86400000) < Math.floor(Date.now()/86400000)) {
+        x = 86400000;
+    }
+    return res + x + off;
 }
 function utcToLocal(time) {
     var offset_in_ms = new Date().getTimezoneOffset() * 1000 * 60; 
+    return time - offset_in_ms;
+}
+
+function localToUtc(time) {
+    var offset_in_ms = new Date().getTimezoneOffset() * 1000 * 60;
     return time + offset_in_ms;
 }
-var currentDayStart = millisecondsToDate(utcToLocal(dayStartMilli(Date.now())) - new Date().getTimezoneOffset() * 60 *1000);
+var currentDayStart = millisecondsToDate(localToUtc(dayStartMilli(Date.now())) - new Date().getTimezoneOffset() * 60 *1000);
 
 function dateToMilliseconds(date) {
     var ms = new Date(date).getTime();
@@ -572,29 +605,17 @@ var timePeriod;
 
 timePeriod = localStorage.getItem('timePeriod');
 if (timePeriod != 1) {
-    startDate = millisecondsToDate(utcToLocal(Date.now()) - (new Date().getTimezoneOffset() * 60 *1000) - timePeriod);
+    startDate = millisecondsToDate(localToUtc(Date.now()) - (new Date().getTimezoneOffset() * 60 *1000) - timePeriod);
     //console.log(timePeriod, startDate);
     endDate = '';
 } else {
-    startDate = millisecondsToDate(dateToMilliseconds(localStorage.getItem('timePeriod1')) - (new Date().getTimezoneOffset() * 60 *1000));
-    endDate = millisecondsToDate(dateToMilliseconds(localStorage.getItem('timePeriod2')) - (new Date().getTimezoneOffset() * 60 *1000));
+    startDate = millisecondsToDate(dateToMilliseconds(localStorage.getItem('timePeriod1')) + (new Date().getTimezoneOffset() * 60 *1000));
+    endDate = millisecondsToDate(dateToMilliseconds(localStorage.getItem('timePeriod2')) + (new Date().getTimezoneOffset() * 60 *1000));
+    console.log(startDate);
+    console.log(endDate);
+
 }
-// timePeriod = localStorage.getItem('timePeriod');
-// if (timePeriod != 1) {
-//     document.getElementById("Time-Period").onchange = function () {
-//         document.getElementById("Time-Period1").setAttribute("disabled", "disabled");
-//         document.getElementById("Time-Period2").setAttribute("disabled", "disabled");
-//         if (this.value == 1) {
-//             document.getElementById("Time-Period1").removeAttribute("disabled");
-//             document.getElementById("Time-Period2").removeAttribute("disabled");
-//             startDate = millisecondsToDate(dateToMilliseconds(localStorage.getItem('timePeriod1')) + (new Date().getTimezoneOffset() * 60 *1000));
-//             endDate = millisecondsToDate(dateToMilliseconds(localStorage.getItem('timePeriod2')) + (new Date().getTimezoneOffset() * 60 *1000));
-//             } else {
-//                 startDate = millisecondsToDate(utcToLocal(Date.now()) + (new Date().getTimezoneOffset() * 60 *1000) - timePeriod);
-//                 endDate = '';
-//             }
-//     }
-// }
+
 
 var workStation = localStorage.getItem('wrk');
 //console.log(workStation);
@@ -630,7 +651,7 @@ async function oeeData() {
     try {
         data = await getDataFromAPI();
         //after data is filled you process it
-        doAll(data, dateToMilliseconds(startDate));
+        doAll(data, dateToMilliseconds(startDate), dateToMilliseconds(endDate));
     } catch (error) {
         throw error;
     }
