@@ -572,18 +572,24 @@ function iot(jsonIot, sd, fd, measurement) {
         list_of_IoT.push(newIotObject);
     }
 
-    var x_axis = [millisecondsToDate(sd)];
-    var min_data = [null];
-    var max_data = [null];
+    var x_axis = [];
+    var min_data = [];
+    var max_data = [];
+    if (list_of_IoT[0].start > sd) {
+        x_axis.push(sd);
+        min_data.push(null);
+        max_data.push(null);
+    }
     for (let i = 0; i < list_of_IoT.length; i++) {
         x_axis.push(millisecondsToDate(list_of_IoT[i].start));
         min_data.push(list_of_IoT[i].parameters[measurement].min);
         max_data.push(list_of_IoT[i].parameters[measurement].max);
     }
-
-    x_axis.push(millisecondsToDate(fd));
-    min_data.push(null);
-    max_data.push(null);
+    if (list_of_IoT[0].end < fd) {
+        x_axis.push(millisecondsToDate(fd));
+        min_data.push(null);
+        max_data.push(null);
+    }
 
     const data_IoT = {
         labels: x_axis,
@@ -618,9 +624,14 @@ function iot(jsonIot, sd, fd, measurement) {
         data: data_IoT,
         options: {
             scales: {
-                // xAxes:[{
-                //     type : 'time'
-                // }],
+                xAxes:[{
+                    type : 'time',
+                    time: {
+                        unit: 'hour',
+                        unitStepSize: 1,
+                        tooltipFormat : 'hA'
+                    }
+                }],
                 yAxes:[{
                     ticks : {
                     min : Math.floor(Math.min(...min_data) * 0.15),
