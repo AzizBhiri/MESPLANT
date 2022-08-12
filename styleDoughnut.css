@@ -22,6 +22,10 @@
     color: white;
 }
 
+.chartContainer {
+    display: block;
+}
+
 #myChart1 {
     transform: scale(0.8);
 }
@@ -32,23 +36,45 @@
     transform: scale(0.8);
 }
 
+
 .title {
     font-family: Georgia;
     text-align: center;
 }
 
 @media only screen and (min-width: 900px) {
+/* 
+    .chartContainer {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        grid-auto-rows: 50vh;
+        grid-auto-columns: 50vw;
+
+    } */
+
     #myChart1 {
         transform: scale(0.48);
         margin-top: -25%;
+        /* grid-column-start: 1;
+        grid-column-end: 2;
+        grid-row-start: 1;
+        grid-row-end: 2; */
     }
     #myChart2 {
         transform: scale(0.48);
         margin-top: -25%;
+        /* grid-column-start: 2;
+        grid-column-end: 3;
+        grid-row-start: 1;
+        grid-row-end: 2; */
     }
     #myChart3 {
         transform: scale(0.48);
         margin-top: -25%;
+        /* grid-column-start: 2;
+        grid-column-end: 3;
+        grid-row-start: 4;
+        grid-row-end: 5; */
     }
     
 }

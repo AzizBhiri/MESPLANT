@@ -40,15 +40,18 @@
           <br><br>    
           <label for="Report"><b>Report Type : </b></label>
           <select name="Report" id="Report">
-            <!-- <option value="OEE">OEE</option>
-            <option value="Products">Products</option>
-            <option value="DownTime">DownTime</option> -->
             <option value="Production" selected>Production</option>
             <option value="IoT">IoT</option>
             <option value="Service">Service</option>
-          </select>       
+          </select>
+          <br><br>       
+          <label style="font-size: 12px;" for="IoT-Type"><b>IoT Measurement : </b></label>
+          <select disabled style="font-size: 12px;" name="IoT-Type" id="IoT-Type">
+            <option value="Engine Temperature" selected>Engine Temperature</option>
+            <option value="Engine Speed">Engine Speed</option>
+          </select>
           <br><br>
-          <br><br>
+          <br><br> 
           <a href="./doughnut.html">
             <input type="button" name="report" id="report" value="Create Report" onclick="saveToLocalStorage()">
           </a> 
@@ -91,6 +94,7 @@
       myField2.valueAsNumber = (now2.getTime() - now2.getTimezoneOffset() * 60000)  - ((now2.getTime() - now2.getTimezoneOffset() * 60000) % 60000);
     }
     get_now_datetime();
+
     document.getElementById("Time-Period").onchange = function () {
       document.getElementById("Time-Period1").setAttribute("disabled", "disabled");
       document.getElementById("Time-Period2").setAttribute("disabled", "disabled");
@@ -100,12 +104,21 @@
       }
     }
 
+    document.getElementById("Report").onchange = function () {
+      document.getElementById("IoT-Type").setAttribute("disabled", "disabled");
+      if (this.value == "IoT") {
+        document.getElementById("IoT-Type").removeAttribute("disabled");
+      }
+    }
+
     function saveToLocalStorage() {
       localStorage.setItem('timePeriod', document.getElementById('Time-Period').value);
       localStorage.setItem('timePeriod1', document.getElementById('Time-Period1').value);
       localStorage.setItem('timePeriod2', document.getElementById('Time-Period2').value);
       localStorage.setItem('wrk', document.getElementById('Workstation').value);
       localStorage.setItem('type', document.getElementById('Report').value);
+      localStorage.setItem('IoT-Type', document.getElementById('IoT-Type').value);
+
     }
 </script>
 <script src="doughnutAPI.js"></script>

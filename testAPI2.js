@@ -424,6 +424,8 @@ var startDate = millisecondsToDate(localToUtc(dayStartMilli(Date.now())));
 // create oee request
 // var startDate = '2022-07-29 00:30:00';
 console.log(startDate);
+console.log(millisecondsToDate(dayStartMilli(Date.now())));
+
 var endDate = '';
 
 //select workstation
