@@ -594,8 +594,8 @@ function iot(jsonIot, sd, fd) {
         //Add gaps in the middle
         // let i = 0; ; 
         // while (i < x_axis.length - 1) {
-        //     if ((dateToMilliseconds(x_axis[i + 1]) - dateToMilliseconds(x_axis[i])) > 5*60*1000) {
-        //         x_axis.splice(i + 1, 0, millisecondsToDate(utcToLocal(dateToMilliseconds(x_axis[i]) + 5*60*1000)));
+        //     if ((dateToMilliseconds(x_axis[i + 1]) - dateToMilliseconds(x_axis[i])) > 6*60*1000) {
+        //         x_axis.splice(i + 1, 0, millisecondsToDate(utcToLocal(dateToMilliseconds(x_axis[i]) + 6*60*1000)));
         //         min_data.splice(i + 1, 0, null);
         //         max_data.splice(i + 1, 0, null);
         //     }
@@ -748,17 +748,16 @@ var timePeriod;
 
 timePeriod = localStorage.getItem('timePeriod');
 if (timePeriod != 1) {
-    startDate = millisecondsToDate(localToUtc(Date.now()) + (new Date().getTimezoneOffset() * 60 *1000) - timePeriod);
+    startDate = millisecondsToDate(localToUtc(Date.now()) - timePeriod);
     //console.log(timePeriod, startDate);
     endDate = '';
 } else {
-    startDate = millisecondsToDate(dateToMilliseconds(localStorage.getItem('timePeriod1')) + (new Date().getTimezoneOffset() * 60 *1000));
-    endDate = millisecondsToDate(dateToMilliseconds(localStorage.getItem('timePeriod2')) + (new Date().getTimezoneOffset() * 60 *1000));
-    console.log(startDate);
-    console.log(endDate);
+    startDate = millisecondsToDate(localToUtc(dateToMilliseconds(localStorage.getItem('timePeriod1'))));
+    endDate = millisecondsToDate(localToUtc(dateToMilliseconds(localStorage.getItem('timePeriod2'))));
 
 }
-
+console.log(startDate);
+console.log(endDate);
 
 var workStation = localStorage.getItem('wrk');
 
