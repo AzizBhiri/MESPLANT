@@ -538,11 +538,11 @@ function reportSelector() {
     if (localStorage.getItem('type') === 'Production') {
         doAll(data, dateToMilliseconds(startDate), dateToMilliseconds(endDate));
     } else if (localStorage.getItem('type') === 'IoT') {
-        var measurement = 0;
-        if (localStorage.getItem('IoT-Type') === 'Engine Speed') {
-            measurement = 1;
-        }
-        iot(data, dateToMilliseconds(startDate), dateToMilliseconds(endDate), measurement);
+        // var measurement = 0;
+        // if (localStorage.getItem('IoT-Type') === 'Engine Speed') {
+        //     measurement = 1;
+        // }
+        iot(data, dateToMilliseconds(startDate), dateToMilliseconds(endDate));
     } else if (localStorage.getItem('type') === 'Service') {
         alert('Service is not available at the moment');
     } 
@@ -564,86 +564,150 @@ function appearence() {
     }
 }
 //IoT Report
-function iot(jsonIot, sd, fd, measurement) {
+function iot(jsonIot, sd, fd) {
     var arr = JSON.parse(JSON.stringify(jsonIot));
     var list_of_IoT = [];
     for (let i = 0; i < arr.data.length; i++) {
         var newIotObject = new IoTObj(dateToMilliseconds(arr.data[i].start), dateToMilliseconds(arr.data[i].end), arr.data[i].parameters);
         list_of_IoT.push(newIotObject);
     }
-
-    var x_axis = [];
-    var min_data = [];
-    var max_data = [];
-    if (list_of_IoT[0].start > sd) {
-        x_axis.push(sd);
-        min_data.push(null);
-        max_data.push(null);
-    }
-    for (let i = 0; i < list_of_IoT.length; i++) {
-        x_axis.push(millisecondsToDate(list_of_IoT[i].start));
-        min_data.push(list_of_IoT[i].parameters[measurement].min);
-        max_data.push(list_of_IoT[i].parameters[measurement].max);
-    }
-    if (list_of_IoT[0].end < fd) {
-        x_axis.push(millisecondsToDate(fd));
-        min_data.push(null);
-        max_data.push(null);
-    }
-
-    const data_IoT = {
-        labels: x_axis,
-        datasets: [{
-            label: 'Min',
-            data: min_data,
-            fill: false,
-            borderColor: 'blue',
-            tension: 0.4,
-            backgroundColor : 'rgb(0, 0, 0, 0.1)',
-            pointBackgroundColor : 'rgb(0, 0, 0, 1)',
-            pointBorderColor : 'rgb(0, 0, 0, 1)',
-            pointRadius : 40/x_axis.length,
-            pointHoverRadius : 6
-        }, 
-        {
-            label: 'Max',
-            data: max_data,
-            fill: '-1',
-            borderColor: 'red',
-            tension: 0.4,
-            backgroundColor : 'rgb(0, 0, 0, 0.1)',
-            pointBackgroundColor : 'rgb(0, 0, 0, 1)',
-            pointBorderColor : 'rgb(0, 0, 0, 1)',
-            pointRadius : 40/x_axis.length,
-            pointHoverRadius : 6
-            }]
-    };
-        
-    const config_IoT = {
-        type: 'line',
-        data: data_IoT,
-        options: {
-            scales: {
-                xAxes:[{
-                    type : 'time',
-                    time: {
-                        unit: 'hour',
-                        unitStepSize: 1,
-                        tooltipFormat : 'hA'
-                    }
-                }],
-                yAxes:[{
-                    ticks : {
-                    min : Math.floor(Math.min(...min_data) * 0.15),
-                    max : Math.floor(Math.max(...max_data) * 1.15)
-                    }
-                }]
-            }
+    for( let k = 0; k < arr.data[0].parameters.length; k++) {
+        var x_axis = [];
+        var min_data = [];
+        var max_data = [];
+        if ((list_of_IoT[0].start) > sd) {
+            x_axis.push(sd);
+            min_data.push(null);
+            max_data.push(null);
         }
-    };
+        for (let i = 0; i < list_of_IoT.length; i++) {
+            x_axis.push(millisecondsToDate(utcToLocal(list_of_IoT[i].start)));
+            min_data.push(list_of_IoT[i].parameters[k].min);
+            max_data.push(list_of_IoT[i].parameters[k].max);
+        }
+        if ((list_of_IoT[0].end) < fd) {
+            x_axis.push(millisecondsToDate(fd));
+            min_data.push(null);
+            max_data.push(null);
+        }
+
+        //Add gaps in the middle
+        // let i = 0; ; 
+        // while (i < x_axis.length - 1) {
+        //     if ((dateToMilliseconds(x_axis[i + 1]) - dateToMilliseconds(x_axis[i])) > 5*60*1000) {
+        //         x_axis.splice(i + 1, 0, millisecondsToDate(utcToLocal(dateToMilliseconds(x_axis[i]) + 5*60*1000)));
+        //         min_data.splice(i + 1, 0, null);
+        //         max_data.splice(i + 1, 0, null);
+        //     }
+        //     i++;
+        // }
+
+        let stepped = false;
+        if (arr.data[0].parameters[k].name === "Engine On/Off") {
+            stepped = true;
+        }
+
+        var data_IoT = {
+            labels: x_axis,
+            datasets: [{
+                label: 'Min',
+                data: min_data,
+                fill: false,
+                steppedLine : stepped,
+                borderColor: 'blue',
+                tension: 0.4,
+                backgroundColor : 'rgb(0, 0, 0, 0.1)',
+                pointBackgroundColor : 'rgb(0, 0, 0, 1)',
+                pointBorderColor : 'rgb(0, 0, 0, 1)',
+                pointRadius : (window.innerWidth * 0.1)/x_axis.length,
+                pointHoverRadius : (window.innerWidth * 0.2)/x_axis.length
+            }, 
+            {
+                label: 'Max',
+                data: max_data,
+                fill: '-1',
+                steppedLine : stepped,
+                borderColor: 'red',
+                tension: 0.4,
+                backgroundColor : 'rgb(0, 0, 0, 0.1)',
+                pointBackgroundColor : 'rgb(0, 0, 0, 1)',
+                pointBorderColor : 'rgb(0, 0, 0, 1)',
+                pointRadius : (window.innerWidth * 0.1)/x_axis.length,
+                pointHoverRadius : (window.innerWidth * 0.2)/x_axis.length
+                }]
+        };
+
+        var timeUnit = 'hour';
+        if (dateToMilliseconds(x_axis[x_axis.length - 1]) - dateToMilliseconds(x_axis[0]) > 172800000) {
+            timeUnit = 'day';
+        }
+            
+        var config_IoT = {
+            type: 'line',
+            data: data_IoT,
+            options: {
+                scales: {
+                    xAxes:[{
+                        type : 'time',
+                        time: {
+                            unit: timeUnit,
+                            unitStepSize: 1,
+                            tooltipFormat : 'MMM D h:mm:ss a'
+                        }
+                    }],
+                    yAxes:[{
+                        ticks : {
+                        min : Math.floor(Math.min(...min_data) * 0.15),
+                        max : Math.floor(Math.max(...max_data) * 1.15)
+                        }
+                    }]
+                },
+                title: {
+                    display: true,
+                    text: arr.data[0].parameters[k].name
+                }
+            }
+        };
         
-    const ctx_IoT = document.getElementById('myChart1');
-    var lineChart_IoT = new Chart(ctx_IoT, config_IoT);        
+        var newInput = document.createElement('input');
+        newInput.setAttribute("type", "checkbox");
+        newInput.setAttribute("value", arr.data[0].parameters[k].name);
+        newInput.setAttribute("id", arr.data[0].parameters[k].name.replace(/\s+/g, '-'));
+        newInput.setAttribute("name", arr.data[0].parameters[k].name.replace(/\s+/g, '-'));
+        newInput.setAttribute("checked", true);
+
+        var newLabel = document.createElement('label');
+        newLabel.setAttribute("for", arr.data[0].parameters[k].name.replace(/\s+/g, '-'));
+        newLabel.innerText = arr.data[0].parameters[k].name;
+        var checkboxContainer = document.getElementById("form");
+
+        var newBr = document.createElement('br');
+
+        checkboxContainer.appendChild(newInput);
+        checkboxContainer.appendChild(newLabel);
+        checkboxContainer.appendChild(newBr);
+
+        var newDiv = document.createElement('canvas');
+        newDiv.setAttribute("id", "myLine" + k.toString());
+        var lineContainer = document.getElementById("lineContainer");
+        lineContainer.appendChild(newDiv);
+
+        var ctx_IoT = document.getElementById('myLine' + k.toString());
+        var lineChart_IoT = new Chart(ctx_IoT, config_IoT);
+    }
+
+    //Toggle
+    for (let k = 0; k < arr.data[0].parameters.length; k++) {
+        var elt = document.getElementById(arr.data[0].parameters[k].name.replace(/\s+/g, '-'));
+        elt.onchange = function () {
+            document.getElementById('myLine' + k.toString()).style.display = "block";
+            if (this.checked == false) {
+                document.getElementById('myLine' + k.toString()).style.display = "none";
+            }
+          }
+    }
+    
+
 }
 
 
@@ -684,7 +748,7 @@ var timePeriod;
 
 timePeriod = localStorage.getItem('timePeriod');
 if (timePeriod != 1) {
-    startDate = millisecondsToDate(localToUtc(Date.now()) - (new Date().getTimezoneOffset() * 60 *1000) - timePeriod);
+    startDate = millisecondsToDate(localToUtc(Date.now()) + (new Date().getTimezoneOffset() * 60 *1000) - timePeriod);
     //console.log(timePeriod, startDate);
     endDate = '';
 } else {
