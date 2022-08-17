@@ -592,15 +592,44 @@ function iot(jsonIot, sd, fd) {
         }
 
         //Add gaps in the middle
-        // let i = 0; ; 
-        // while (i < x_axis.length - 1) {
-        //     if ((dateToMilliseconds(x_axis[i + 1]) - dateToMilliseconds(x_axis[i])) > 6*60*1000) {
-        //         x_axis.splice(i + 1, 0, millisecondsToDate(utcToLocal(dateToMilliseconds(x_axis[i]) + 6*60*1000)));
-        //         min_data.splice(i + 1, 0, null);
-        //         max_data.splice(i + 1, 0, null);
-        //     }
-        //     i++;
-        // }
+        let i = 0; ; 
+        while (i < x_axis.length - 1) {
+            if ((dateToMilliseconds(x_axis[i + 1]) - dateToMilliseconds(x_axis[i])) > 5*60*1000) {
+                x_axis.splice(i + 1, 0, millisecondsToDate(utcToLocal(dateToMilliseconds(x_axis[i]) + 5*60*1000)));
+                min_data.splice(i + 1, 0, null);
+                max_data.splice(i + 1, 0, null);
+            }
+            i++;
+        }
+
+        let yAxis = [{
+            ticks : {
+                min : Math.floor(Math.min(...min_data) * 0.15),
+                max : Math.floor(Math.max(...max_data) * 1.15),
+            }
+        }];
+        let graphType = 'line';
+        let ptColor1 = 'black';
+        let brColor1 = 'black';
+        let ptColor2 = 'black';
+        let brColor2 = 'black';
+        let coeff = 0.1;
+
+        if (arr.data[0].parameters[k].name === 'Engine Error') {
+            yAxis = [{
+                type : 'category',
+                labels : min_data,
+                display : false,
+            }];
+
+            graphType = 'scatter';
+
+            ptColor1 = 'blue';
+            brColor1 = 'blue';
+            ptColor2 = 'red';
+            brColor2 = 'red';
+            coeff = 0.15;
+        }
 
         let stepped = false;
         if (arr.data[0].parameters[k].name === "Engine On/Off") {
@@ -616,11 +645,11 @@ function iot(jsonIot, sd, fd) {
                 steppedLine : stepped,
                 borderColor: 'blue',
                 tension: 0.4,
-                backgroundColor : 'rgb(0, 0, 0, 0.1)',
-                pointBackgroundColor : 'rgb(0, 0, 0, 1)',
-                pointBorderColor : 'rgb(0, 0, 0, 1)',
-                pointRadius : (window.innerWidth * 0.1)/x_axis.length,
-                pointHoverRadius : (window.innerWidth * 0.2)/x_axis.length
+                backgroundColor : 'rgb(0, 0, 0, 0.2)',
+                pointBackgroundColor : ptColor1,
+                pointBorderColor : brColor1,
+                pointRadius : (window.innerWidth * coeff)/x_axis.length,
+                pointHoverRadius : (window.innerWidth * 2 * coeff)/x_axis.length
             }, 
             {
                 label: 'Max',
@@ -630,10 +659,10 @@ function iot(jsonIot, sd, fd) {
                 borderColor: 'red',
                 tension: 0.4,
                 backgroundColor : 'rgb(0, 0, 0, 0.1)',
-                pointBackgroundColor : 'rgb(0, 0, 0, 1)',
-                pointBorderColor : 'rgb(0, 0, 0, 1)',
-                pointRadius : (window.innerWidth * 0.1)/x_axis.length,
-                pointHoverRadius : (window.innerWidth * 0.2)/x_axis.length
+                pointBackgroundColor : ptColor2,
+                pointBorderColor : brColor2,
+                pointRadius : (window.innerWidth * coeff)/x_axis.length,
+                pointHoverRadius : (window.innerWidth * 2 * coeff)/x_axis.length
                 }]
         };
 
@@ -641,9 +670,9 @@ function iot(jsonIot, sd, fd) {
         if (dateToMilliseconds(x_axis[x_axis.length - 1]) - dateToMilliseconds(x_axis[0]) > 172800000) {
             timeUnit = 'day';
         }
-            
+
         var config_IoT = {
-            type: 'line',
+            type: graphType,
             data: data_IoT,
             options: {
                 scales: {
@@ -653,14 +682,12 @@ function iot(jsonIot, sd, fd) {
                             unit: timeUnit,
                             unitStepSize: 1,
                             tooltipFormat : 'MMM D h:mm:ss a'
+                        },
+                        ticks : {
+                            font : 'Georgia'
                         }
                     }],
-                    yAxes:[{
-                        ticks : {
-                        min : Math.floor(Math.min(...min_data) * 0.15),
-                        max : Math.floor(Math.max(...max_data) * 1.15)
-                        }
-                    }]
+                    yAxes: yAxis
                 },
                 title: {
                     display: true,

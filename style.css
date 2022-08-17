@@ -204,7 +204,7 @@ body {
     font-size: 10px;
     font-weight: bolder;
     position: absolute;
-    top: 35%;
+    top: 35vh;
     left: 5%;
 }
 
@@ -225,7 +225,7 @@ body {
     font-size: 10px;
     font-weight: bolder;
     position: absolute;
-    top: 50%;
+    top: 50vh;
     left: 5%;
 }
 
@@ -241,6 +241,6 @@ body {
     font-size: 10px;
     font-weight: bolder;
     position: absolute;
-    top: 65%;
+    top: 65vh;
     left: 5%;
 }
