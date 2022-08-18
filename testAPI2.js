@@ -196,8 +196,13 @@ function doAll(json) {
             var width = (utcToLocal(list_of_blocks[i].finishedAt) - utcToLocal(list_of_blocks[i].startedAt)) / 7200000;
             var w;
             if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
-                w = "calc(" + width.toString() + "*(57vw - 5px))";
-                document.getElementById('barsContainer').style.setProperty('--contWid', '56vw');
+                if(window.innerHeight > window.innerWidth) {
+                    w = "calc(" + width.toString() + "*(57vw - 5px))";
+                    document.getElementById('barsContainer').style.setProperty('--contWid', '56vw');
+                } else {
+                    w = "calc(" + width.toString() + "*(58vw - 5px))";
+                    document.getElementById('barsContainer').style.setProperty('--contWid', '58vw');
+                }
                } else { 
                     w = "calc(" + width.toString() + "*(60vw - 17px))";
                     document.getElementById('barsContainer').style.setProperty('--contWid', '60vw');

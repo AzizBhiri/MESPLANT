@@ -55,7 +55,7 @@ label{
 #home{  
     width: 6vw;
     min-width: 60px;  
-    height: 3vh;  
+    height: calc(3vh + 1vw);  
     border: none;  
     border-radius: 17px;  
     padding-left: 7px;  
@@ -91,7 +91,7 @@ label{
     font-size: 10px;
     font-weight: bolder;
     position: absolute;
-    top: 35vh;
+    top: calc(35vh - 6vw);
     left: 5%;
 }
 
@@ -107,7 +107,7 @@ label{
     font-size: 10px;
     font-weight: bolder;
     position: absolute;
-    top: 50vh;
+    top: calc(50vh - 3vw);
     left: 5%;
 }
 
@@ -123,7 +123,7 @@ label{
     font-size: 10px;
     font-weight: bolder;
     position: absolute;
-    top: 65vh;
+    top: calc(65vh + 0vw);
     left: 5%;
 }
 

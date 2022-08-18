@@ -5,7 +5,7 @@
 #back{  
     width: 6vw;
     min-width: 60px;  
-    height: 3vh;  
+    height: calc(3vh + 1vw);  
     border: none;  
     border-radius: 17px;  
     padding-left: 7px;  
