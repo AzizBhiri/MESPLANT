@@ -180,16 +180,16 @@ function doAll(json) {
     function drawBarDay(list_of_blocks) {
         for (let i = 0; i < list_of_blocks.length; i++) {
             if (list_of_blocks[i].isRunning) {
-                color_set(i, 'green');
+                color_set(i, '#52c77a');
                 } else {
                     /*if (list_of_blocks[i].downtimeTypeName === "Unknown") {
                         color_set(i, 'red');
                     } else */if (list_of_blocks[i].downtimeTypeName === "No data") {
-                        color_set(i, 'DimGray');
+                        color_set(i, '#9e9a9d');
                     } else if (list_of_blocks[i].downtimeTypeName === "Micro stop") {
-                        color_set(i, 'Yellow');
+                        color_set(i, '#faea70');
                     } else {
-                        color_set(i, 'Red');
+                        color_set(i, '#e90606');
                     }
                 }
 
@@ -454,7 +454,7 @@ var workStation = localStorage.getItem('wrk');
 //console.log(workStation);
 
 var oeeReq = createRequest(
-    createOeeUrl(workStation, startDate, endDate),
+    createOeeUrl(workStation = 1, startDate, endDate),
     'GET'
 );
 

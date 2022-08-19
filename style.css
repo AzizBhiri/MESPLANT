@@ -10,7 +10,7 @@
 }
 
 body {
-    background-color:#6abadeba;
+    background-color: #d0e1f0;
 }
 
 .timeAxis {
@@ -82,7 +82,7 @@ body {
     width: var(--contWid);
     height: 50vh;
     border-width: 8px;
-    border-color: #6abade00;
+    border-color: #a3c6e100;
     border-style: solid;
     border-radius: 6px;
     padding: 20px;
@@ -103,7 +103,7 @@ body {
 .dotV{
     height: 10px;
     width: 10px;
-    background-color: black;
+    background-color: #293a58;
     border-radius: 50%;
 }
 
@@ -112,7 +112,7 @@ body {
     width: 6px;
     border-style: solid;
     border-width: 2px;
-    border-color: black;
+    border-color: #293a58;
     background-color: #00000000;
     border-radius: 50%;
 }

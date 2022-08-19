@@ -320,11 +320,11 @@ function doAll(json, sd, fd) {
             label: 'State',
             data: [green, red, burgundy, grey, yellow],
             backgroundColor: [
-                'green',
-                'red',
-                'maroon',
-                'grey',
-                'yellow'
+                '#52c77a',
+                '#e90606',
+                '#9f1818',
+                '#9e9a9d',
+                '#faea70'
             ],
             hoverBorderWidth: 2,
             hoverBorderColor: 'black',
@@ -424,12 +424,12 @@ function doAll(json, sd, fd) {
 
         var colors1 = []; 
         for (let i = 0; i < unique_product_names.length; i++) {
-            colors1.push('green');
+            colors1.push('#52c77a');
         }
 
         var colors2 = []; 
         for (let i = 0; i < unique_product_names.length; i++) {
-            colors2.push('red');
+            colors2.push('#e90606');
         }
 
 
@@ -613,7 +613,7 @@ function iot(jsonIot, sd, fd) {
         let brColor1 = 'black';
         let ptColor2 = 'black';
         let brColor2 = 'black';
-        let coeff = 0.1;
+        let coeff = 0.05;
 
         if (arr.data[0].parameters[k].name === 'Engine Error') {
             yAxis = [{
@@ -624,11 +624,11 @@ function iot(jsonIot, sd, fd) {
 
             graphType = 'scatter';
 
-            ptColor1 = 'blue';
-            brColor1 = 'blue';
-            ptColor2 = 'red';
-            brColor2 = 'red';
-            coeff = 0.15;
+            ptColor1 = '#293a58';
+            brColor1 = '#293a58';
+            ptColor2 = '#e90606';
+            brColor2 = '#e90606';
+            coeff = 0.1;
         }
 
         let stepped = false;
@@ -643,7 +643,7 @@ function iot(jsonIot, sd, fd) {
                 data: min_data,
                 fill: false,
                 steppedLine : stepped,
-                borderColor: 'blue',
+                borderColor: '#293a58',
                 tension: 0.4,
                 backgroundColor : 'rgb(0, 0, 0, 0.2)',
                 pointBackgroundColor : ptColor1,
@@ -656,7 +656,7 @@ function iot(jsonIot, sd, fd) {
                 data: max_data,
                 fill: '-1',
                 steppedLine : stepped,
-                borderColor: 'red',
+                borderColor: '#e90606',
                 tension: 0.4,
                 backgroundColor : 'rgb(0, 0, 0, 0.1)',
                 pointBackgroundColor : ptColor2,
